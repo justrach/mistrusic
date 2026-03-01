@@ -1,0 +1,10 @@
+smolagents[litellm]
+elevenlabs>=2.0
+mistralai>=1.0.0
+transformers
+librosa
+scipy
+numpy
+soundfile
+torch
+python-dotenv

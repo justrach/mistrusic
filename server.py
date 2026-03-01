@@ -41,7 +41,7 @@ VIBE_MAP = {
     "arctic drift":    "trance",
 }
 from openai import OpenAI
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Form, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, JSONResponse
 

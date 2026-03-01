@@ -1,0 +1,1769 @@
+{
+  "sounds": {
+    "boat_motor": {
+      "id": "boat_motor",
+      "name": "Boat Motor",
+      "description": "Rhythmic mechanical chugging with rich harmonic content",
+      "category": "mechanical",
+      "path": "audio/boat_motor.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rhythmic",
+        "mechanical",
+        "engine",
+        "percussive"
+      ]
+    },
+    "helicopter": {
+      "id": "helicopter",
+      "name": "Helicopter",
+      "description": "Rhythmic helicopter blades with pulsing character",
+      "category": "mechanical",
+      "path": "audio/helicopter.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rhythmic",
+        "mechanical",
+        "pulsing",
+        "heavy"
+      ]
+    },
+    "typewriter": {
+      "id": "typewriter",
+      "name": "Typewriter",
+      "description": "Mechanical typing with rhythmic percussive clicks",
+      "category": "mechanical",
+      "path": "audio/typewriter.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rhythmic",
+        "mechanical",
+        "clicks",
+        "percussive"
+      ]
+    },
+    "train": {
+      "id": "train",
+      "name": "Train",
+      "description": "Train wheels on tracks with rhythmic clicking",
+      "category": "mechanical",
+      "path": "audio/train.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rhythmic",
+        "mechanical",
+        "train",
+        "wheels"
+      ]
+    },
+    "clock_ticking": {
+      "id": "clock_ticking",
+      "name": "Clock Ticking",
+      "description": "Steady clock mechanism with pendulum swing",
+      "category": "mechanical",
+      "path": "audio/clock_ticking.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rhythmic",
+        "steady",
+        "ticking",
+        "clock"
+      ]
+    },
+    "gears_grinding": {
+      "id": "gears_grinding",
+      "name": "Gears Grinding",
+      "description": "Metal gears meshing and grinding",
+      "category": "mechanical",
+      "path": "audio/gears_grinding.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "grinding",
+        "metal",
+        "industrial",
+        "harsh"
+      ]
+    },
+    "jackhammer": {
+      "id": "jackhammer",
+      "name": "Jackhammer",
+      "description": "Rapid percussive construction tool",
+      "category": "mechanical",
+      "path": "audio/jackhammer.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "percussive",
+        "rapid",
+        "construction",
+        "noise"
+      ]
+    },
+    "printing_press": {
+      "id": "printing_press",
+      "name": "Printing Press",
+      "description": "Industrial printing machinery in operation",
+      "category": "mechanical",
+      "path": "audio/printing_press.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rhythmic",
+        "industrial",
+        "printing",
+        "machine"
+      ]
+    },
+    "sewing_machine": {
+      "id": "sewing_machine",
+      "name": "Sewing Machine",
+      "description": "Fast rhythmic needle movements",
+      "category": "mechanical",
+      "path": "audio/sewing_machine.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "fast",
+        "rhythmic",
+        "needle",
+        "rapid"
+      ]
+    },
+    "washing_machine": {
+      "id": "washing_machine",
+      "name": "Washing Machine",
+      "description": "Drum rotation with sloshing water",
+      "category": "mechanical",
+      "path": "audio/washing_machine.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rotation",
+        "water",
+        "sloshing",
+        "cycle"
+      ]
+    },
+    "vacuum_cleaner": {
+      "id": "vacuum_cleaner",
+      "name": "Vacuum Cleaner",
+      "description": "High-speed motor with air suction",
+      "category": "mechanical",
+      "path": "audio/vacuum_cleaner.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "motor",
+        "air",
+        "suction",
+        "whir"
+      ]
+    },
+    "chainsaw": {
+      "id": "chainsaw",
+      "name": "Chainsaw",
+      "description": "Two-stroke engine with chain noise",
+      "category": "mechanical",
+      "path": "audio/chainsaw.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "engine",
+        "buzzy",
+        "aggressive",
+        "loud"
+      ]
+    },
+    "submarine_sonar": {
+      "id": "submarine_sonar",
+      "name": "Submarine Sonar",
+      "description": "Underwater ping with reverb decay",
+      "category": "mechanical",
+      "path": "audio/submarine_sonar.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "ping",
+        "underwater",
+        "reverb",
+        "naval"
+      ]
+    },
+    "piano": {
+      "id": "piano",
+      "name": "Piano",
+      "description": "Clean acoustic piano with rich harmonic overtones",
+      "category": "instruments",
+      "path": "audio/piano.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "melodic",
+        "acoustic",
+        "harmonic",
+        "musical"
+      ]
+    },
+    "violin": {
+      "id": "violin",
+      "name": "Violin",
+      "description": "String instrument with rich bow harmonics",
+      "category": "instruments",
+      "path": "audio/violin.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "string",
+        "bowed",
+        "expressive",
+        "harmonic"
+      ]
+    },
+    "cello": {
+      "id": "cello",
+      "name": "Cello",
+      "description": "Deep resonant bowed strings",
+      "category": "instruments",
+      "path": "audio/cello.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "string",
+        "bowed",
+        "deep",
+        "resonant"
+      ]
+    },
+    "guitar": {
+      "id": "guitar",
+      "name": "Acoustic Guitar",
+      "description": "Plucked strings with wooden body resonance",
+      "category": "instruments",
+      "path": "audio/guitar.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "plucked",
+        "string",
+        "wooden",
+        "folk"
+      ]
+    },
+    "electric_guitar": {
+      "id": "electric_guitar",
+      "name": "Electric Guitar",
+      "description": "Distorted or clean electric guitar tones",
+      "category": "instruments",
+      "path": "audio/electric_guitar.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "electric",
+        "distorted",
+        "rock",
+        "solo"
+      ]
+    },
+    "harp": {
+      "id": "harp",
+      "name": "Harp",
+      "description": "Plucked strings with celestial quality",
+      "category": "instruments",
+      "path": "audio/harp.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "plucked",
+        "celestial",
+        "angelic",
+        "glissando"
+      ]
+    },
+    "banjo": {
+      "id": "banjo",
+      "name": "Banjo",
+      "description": "Bright plucked strings with resonant head",
+      "category": "instruments",
+      "path": "audio/banjo.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "plucked",
+        "bright",
+        "folk",
+        "country"
+      ]
+    },
+    "sitar": {
+      "id": "sitar",
+      "name": "Sitar",
+      "description": "Indian plucked string with sympathetic resonance",
+      "category": "instruments",
+      "path": "audio/sitar.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "plucked",
+        "indian",
+        "exotic",
+        "drone"
+      ]
+    },
+    "flute": {
+      "id": "flute",
+      "name": "Flute",
+      "description": "Breathy woodwind tone with soft attack",
+      "category": "instruments",
+      "path": "audio/flute.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "breathy",
+        "woodwind",
+        "soft",
+        "airy"
+      ]
+    },
+    "saxophone": {
+      "id": "saxophone",
+      "name": "Saxophone",
+      "description": "Brassy reed instrument with warm tone",
+      "category": "instruments",
+      "path": "audio/saxophone.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "brassy",
+        "reed",
+        "warm",
+        "jazz"
+      ]
+    },
+    "trumpet": {
+      "id": "trumpet",
+      "name": "Trumpet",
+      "description": "Bright brass with piercing attack",
+      "category": "instruments",
+      "path": "audio/trumpet.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "brass",
+        "bright",
+        "piercing",
+        "fanfare"
+      ]
+    },
+    "clarinet": {
+      "id": "clarinet",
+      "name": "Clarinet",
+      "description": "Warm single-reed woodwind",
+      "category": "instruments",
+      "path": "audio/clarinet.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "reed",
+        "woodwind",
+        "warm",
+        "classical"
+      ]
+    },
+    "oboe": {
+      "id": "oboe",
+      "name": "Oboe",
+      "description": "Nasal double-reed with distinct timbre",
+      "category": "instruments",
+      "path": "audio/oboe.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "reed",
+        "nasal",
+        "distinct",
+        "classical"
+      ]
+    },
+    "pan_flute": {
+      "id": "pan_flute",
+      "name": "Pan Flute",
+      "description": "Breathy pipes with Andean character",
+      "category": "instruments",
+      "path": "audio/pan_flute.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "breathy",
+        "pipes",
+        "andean",
+        "world"
+      ]
+    },
+    "didgeridoo": {
+      "id": "didgeridoo",
+      "name": "Didgeridoo",
+      "description": "Low drone with complex overtones",
+      "category": "instruments",
+      "path": "audio/didgeridoo.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "drone",
+        "low",
+        "australian",
+        "overtones"
+      ]
+    },
+    "harmonica": {
+      "id": "harmonica",
+      "name": "Harmonica",
+      "description": "Reed instrument with vocal quality",
+      "category": "instruments",
+      "path": "audio/harmonica.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "reed",
+        "blues",
+        "folk",
+        "portable"
+      ]
+    },
+    "rhodes_piano": {
+      "id": "rhodes_piano",
+      "name": "Rhodes Piano",
+      "description": "Electric piano with bell-like tone",
+      "category": "instruments",
+      "path": "audio/rhodes_piano.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "electric",
+        "bell",
+        "jazz",
+        "funk"
+      ]
+    },
+    "hammond_organ": {
+      "id": "hammond_organ",
+      "name": "Hammond Organ",
+      "description": "Vintage tonewheel organ with drawbars",
+      "category": "instruments",
+      "path": "audio/hammond_organ.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "organ",
+        "gospel",
+        "jazz",
+        "classic"
+      ]
+    },
+    "accordion": {
+      "id": "accordion",
+      "name": "Accordion",
+      "description": "Squeezing bellows with reeds",
+      "category": "instruments",
+      "path": "audio/accordion.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "bellows",
+        "folk",
+        "polka",
+        "french"
+      ]
+    },
+    "saw_wave": {
+      "id": "saw_wave",
+      "name": "Saw Wave",
+      "description": "Bright, buzzy sawtooth wave synthesis",
+      "category": "synthetic",
+      "path": "audio/saw_wave.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "buzzy",
+        "bright",
+        "electronic",
+        "harmonic"
+      ]
+    },
+    "square_wave": {
+      "id": "square_wave",
+      "name": "Square Wave",
+      "description": "Hollow flute-like synthesizer tone",
+      "category": "synthetic",
+      "path": "audio/square_wave.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "hollow",
+        "chiptune",
+        "8-bit",
+        "retro"
+      ]
+    },
+    "sine_wave": {
+      "id": "sine_wave",
+      "name": "Sine Wave",
+      "description": "Pure tone with no harmonics",
+      "category": "synthetic",
+      "path": "audio/sine_wave.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "pure",
+        "clean",
+        "sub",
+        "bass"
+      ]
+    },
+    "synth_pad": {
+      "id": "synth_pad",
+      "name": "Synth Pad",
+      "description": "Ethereal synthesizer pad with slow attack",
+      "category": "synthetic",
+      "path": "audio/synth_pad.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "ambient",
+        "electronic",
+        "evolving",
+        "smooth"
+      ]
+    },
+    "fm_bass": {
+      "id": "fm_bass",
+      "name": "FM Bass",
+      "description": "Sharp attack FM synthesis bass",
+      "category": "synthetic",
+      "path": "audio/fm_bass.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "fm",
+        "bass",
+        "sharp",
+        "digital"
+      ]
+    },
+    "analog_lead": {
+      "id": "analog_lead",
+      "name": "Analog Lead",
+      "description": "Fat analog synthesizer lead",
+      "category": "synthetic",
+      "path": "audio/analog_lead.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "analog",
+        "fat",
+        "solo",
+        "electronic"
+      ]
+    },
+    "vocoder": {
+      "id": "vocoder",
+      "name": "Vocoder",
+      "description": "Robot voice effect with carrier",
+      "category": "synthetic",
+      "path": "audio/vocoder.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "robot",
+        "voice",
+        "talking",
+        "electronic"
+      ]
+    },
+    "bit_crushed": {
+      "id": "bit_crushed",
+      "name": "Bit Crushed",
+      "description": "Low bit-rate digital distortion",
+      "category": "synthetic",
+      "path": "audio/bit_crushed.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "digital",
+        "lo-fi",
+        "distortion",
+        "8-bit"
+      ]
+    },
+    "noise_sweep": {
+      "id": "noise_sweep",
+      "name": "Noise Sweep",
+      "description": "Filtered noise riser or fall",
+      "category": "synthetic",
+      "path": "audio/noise_sweep.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "sweep",
+        "riser",
+        "effect",
+        "transition"
+      ]
+    },
+    "laser_zap": {
+      "id": "laser_zap",
+      "name": "Laser Zap",
+      "description": "Descending pitch electronic zap",
+      "category": "synthetic",
+      "path": "audio/laser_zap.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "zap",
+        "sci-fi",
+        "effect",
+        "descending"
+      ]
+    },
+    "sub_drop": {
+      "id": "sub_drop",
+      "name": "Sub Drop",
+      "description": "Low frequency impact for drops",
+      "category": "synthetic",
+      "path": "audio/sub_drop.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "sub",
+        "drop",
+        "impact",
+        "edm"
+      ]
+    },
+    "arpeggio": {
+      "id": "arpeggio",
+      "name": "Arpeggio",
+      "description": "Cycling pattern of held notes",
+      "category": "synthetic",
+      "path": "audio/arpeggio.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "pattern",
+        "cycling",
+        "trance",
+        "electronic"
+      ]
+    },
+    "drums": {
+      "id": "drums",
+      "name": "Drum Kit",
+      "description": "Acoustic drum kit with punchy transients",
+      "category": "percussion",
+      "path": "audio/drums.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rhythmic",
+        "percussive",
+        "punchy",
+        "transient"
+      ]
+    },
+    "bongo_drums": {
+      "id": "bongo_drums",
+      "name": "Bongo Drums",
+      "description": "Hand drums with hollow tone",
+      "category": "percussion",
+      "path": "audio/bongo_drums.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "hand",
+        "hollow",
+        "latin",
+        "rhythmic"
+      ]
+    },
+    "djembe": {
+      "id": "djembe",
+      "name": "Djembe",
+      "description": "African goblet drum with rich tone",
+      "category": "percussion",
+      "path": "audio/djembe.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "african",
+        "goblet",
+        "rich",
+        "hand"
+      ]
+    },
+    "tambourine": {
+      "id": "tambourine",
+      "name": "Tambourine",
+      "description": "Jingles with struck frame",
+      "category": "percussion",
+      "path": "audio/tambourine.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "jingles",
+        "bright",
+        "shaking",
+        "folk"
+      ]
+    },
+    "cymbal_crash": {
+      "id": "cymbal_crash",
+      "name": "Cymbal Crash",
+      "description": "Metallic crash with long decay",
+      "category": "percussion",
+      "path": "audio/cymbal_crash.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "metallic",
+        "crash",
+        "decay",
+        "bright"
+      ]
+    },
+    "gong": {
+      "id": "gong",
+      "name": "Gong",
+      "description": "Large metal plate with complex harmonics",
+      "category": "percussion",
+      "path": "audio/gong.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "metal",
+        "complex",
+        "asian",
+        "ceremonial"
+      ]
+    },
+    "steel_drums": {
+      "id": "steel_drums",
+      "name": "Steel Drums",
+      "description": "Caribbean tuned percussion",
+      "category": "percussion",
+      "path": "audio/steel_drums.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "caribbean",
+        "tuned",
+        "island",
+        "melodic"
+      ]
+    },
+    "timbales": {
+      "id": "timbales",
+      "name": "Timbales",
+      "description": "Shallow metal drums with rim shots",
+      "category": "percussion",
+      "path": "audio/timbales.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "cuban",
+        "metal",
+        "rim",
+        "latin"
+      ]
+    },
+    "snare_roll": {
+      "id": "snare_roll",
+      "name": "Snare Roll",
+      "description": "Marching snare with buzz roll",
+      "category": "percussion",
+      "path": "audio/snare_roll.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "marching",
+        "roll",
+        "buzz",
+        "military"
+      ]
+    },
+    "kick_drum": {
+      "id": "kick_drum",
+      "name": "Kick Drum",
+      "description": "Deep bass drum thump",
+      "category": "percussion",
+      "path": "audio/kick_drum.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "bass",
+        "thump",
+        "beat",
+        "foundation"
+      ]
+    },
+    "hi_hat": {
+      "id": "hi_hat",
+      "name": "Hi-Hat",
+      "description": "Metallic cymbal chick and sizzle",
+      "category": "percussion",
+      "path": "audio/hi_hat.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "metallic",
+        "chick",
+        "sizzle",
+        "time"
+      ]
+    },
+    "congas": {
+      "id": "congas",
+      "name": "Congas",
+      "description": "Tall narrow Cuban drums",
+      "category": "percussion",
+      "path": "audio/congas.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "cuban",
+        "tall",
+        "slap",
+        "latin"
+      ]
+    },
+    "maracas": {
+      "id": "maracas",
+      "name": "Maracas",
+      "description": "Shaken seeds in hollow container",
+      "category": "percussion",
+      "path": "audio/maracas.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "shaken",
+        "seeds",
+        "rhythmic",
+        "latin"
+      ]
+    },
+    "wood_block": {
+      "id": "wood_block",
+      "name": "Wood Block",
+      "description": "Hollow wooden percussion",
+      "category": "percussion",
+      "path": "audio/wood_block.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "wood",
+        "hollow",
+        "clack",
+        "simple"
+      ]
+    },
+    "triangle": {
+      "id": "triangle",
+      "name": "Triangle",
+      "description": "High pitched metallic ring",
+      "category": "percussion",
+      "path": "audio/triangle.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "high",
+        "metallic",
+        "ring",
+        "orchestral"
+      ]
+    },
+    "ocean_waves": {
+      "id": "ocean_waves",
+      "name": "Ocean Waves",
+      "description": "Gentle ocean waves with natural white noise",
+      "category": "nature",
+      "path": "audio/ocean_waves.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "ambient",
+        "natural",
+        "calm",
+        "noise"
+      ]
+    },
+    "thunder": {
+      "id": "thunder",
+      "name": "Thunder",
+      "description": "Deep rumbling thunder with low-frequency energy",
+      "category": "nature",
+      "path": "audio/thunder.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rumble",
+        "deep",
+        "impact",
+        "low-freq"
+      ]
+    },
+    "rain": {
+      "id": "rain",
+      "name": "Rain",
+      "description": "Steady rainfall with textured white noise",
+      "category": "nature",
+      "path": "audio/rain.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "ambient",
+        "natural",
+        "texture",
+        "noise"
+      ]
+    },
+    "wind": {
+      "id": "wind",
+      "name": "Wind",
+      "description": "Howling wind with spectral movement",
+      "category": "nature",
+      "path": "audio/wind.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "ambient",
+        "natural",
+        "moving",
+        "spectral"
+      ]
+    },
+    "heavy_storm": {
+      "id": "heavy_storm",
+      "name": "Heavy Storm",
+      "description": "Intense rain with thunder cracks",
+      "category": "nature",
+      "path": "audio/heavy_storm.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "intense",
+        "thunder",
+        "rain",
+        "dramatic"
+      ]
+    },
+    "snow_blizzard": {
+      "id": "snow_blizzard",
+      "name": "Snow Blizzard",
+      "description": "Howling wind with snow particles",
+      "category": "nature",
+      "path": "audio/snow_blizzard.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "cold",
+        "howling",
+        "winter",
+        "frozen"
+      ]
+    },
+    "birds": {
+      "id": "birds",
+      "name": "Birds",
+      "description": "Birdsong with melodic chirping patterns",
+      "category": "nature",
+      "path": "audio/birds.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "melodic",
+        "natural",
+        "light",
+        "airy"
+      ]
+    },
+    "cicadas": {
+      "id": "cicadas",
+      "name": "Cicadas",
+      "description": "Summer insect drone",
+      "category": "nature",
+      "path": "audio/cicadas.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "drone",
+        "summer",
+        "insect",
+        "buzzy"
+      ]
+    },
+    "crickets": {
+      "id": "crickets",
+      "name": "Crickets",
+      "description": "Rhythmic night chirping",
+      "category": "nature",
+      "path": "audio/crickets.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rhythmic",
+        "night",
+        "chirp",
+        "calm"
+      ]
+    },
+    "wolf_howl": {
+      "id": "wolf_howl",
+      "name": "Wolf Howl",
+      "description": "Long mournful wolf call",
+      "category": "nature",
+      "path": "audio/wolf_howl.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "mournful",
+        "long",
+        "wild",
+        "spooky"
+      ]
+    },
+    "elephant_trumpet": {
+      "id": "elephant_trumpet",
+      "name": "Elephant Trumpet",
+      "description": "Powerful elephant vocalization",
+      "category": "nature",
+      "path": "audio/elephant_trumpet.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "powerful",
+        "trumpet",
+        "wild",
+        "massive"
+      ]
+    },
+    "whale_song": {
+      "id": "whale_song",
+      "name": "Whale Song",
+      "description": "Deep underwater whale vocalizations",
+      "category": "nature",
+      "path": "audio/whale_song.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "deep",
+        "underwater",
+        "mysterious",
+        "vast"
+      ]
+    },
+    "dolphin_clicks": {
+      "id": "dolphin_clicks",
+      "name": "Dolphin Clicks",
+      "description": "High frequency echolocation clicks",
+      "category": "nature",
+      "path": "audio/dolphin_clicks.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "clicks",
+        "echolocation",
+        "marine",
+        "smart"
+      ]
+    },
+    "frogs": {
+      "id": "frogs",
+      "name": "Frogs",
+      "description": "Wetland frog chorus",
+      "category": "nature",
+      "path": "audio/frogs.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "wetland",
+        "chorus",
+        "croak",
+        "swamp"
+      ]
+    },
+    "bees": {
+      "id": "bees",
+      "name": "Bees",
+      "description": "Hive buzzing and humming",
+      "category": "nature",
+      "path": "audio/bees.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "buzzing",
+        "hive",
+        "busy",
+        "harmonic"
+      ]
+    },
+    "horse_gallop": {
+      "id": "horse_gallop",
+      "name": "Horse Gallop",
+      "description": "Rhythmic hoof beats",
+      "category": "nature",
+      "path": "audio/horse_gallop.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rhythmic",
+        "hoof",
+        "western",
+        "fast"
+      ]
+    },
+    "waterfall": {
+      "id": "waterfall",
+      "name": "Waterfall",
+      "description": "Rushing water with white noise",
+      "category": "nature",
+      "path": "audio/waterfall.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rushing",
+        "water",
+        "power",
+        "noise"
+      ]
+    },
+    "stream": {
+      "id": "stream",
+      "name": "Stream",
+      "description": "Gentle babbling brook",
+      "category": "nature",
+      "path": "audio/stream.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "gentle",
+        "babbling",
+        "peaceful",
+        "water"
+      ]
+    },
+    "fire_crackling": {
+      "id": "fire_crackling",
+      "name": "Fire Crackling",
+      "description": "Wood fire with snaps and pops",
+      "category": "nature",
+      "path": "audio/fire_crackling.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "crackling",
+        "snaps",
+        "warm",
+        "camp"
+      ]
+    },
+    "leaves_rustling": {
+      "id": "leaves_rustling",
+      "name": "Leaves Rustling",
+      "description": "Wind through dry leaves",
+      "category": "nature",
+      "path": "audio/leaves_rustling.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rustling",
+        "wind",
+        "autumn",
+        "gentle"
+      ]
+    },
+    "avalanche": {
+      "id": "avalanche",
+      "name": "Avalanche",
+      "description": "Snow rumbling down mountain",
+      "category": "nature",
+      "path": "audio/avalanche.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rumbling",
+        "snow",
+        "danger",
+        "massive"
+      ]
+    },
+    "earthquake_rumble": {
+      "id": "earthquake_rumble",
+      "name": "Earthquake Rumble",
+      "description": "Deep ground shaking",
+      "category": "nature",
+      "path": "audio/earthquake_rumble.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "deep",
+        "shaking",
+        "ground",
+        "sub"
+      ]
+    },
+    "volcano_eruption": {
+      "id": "volcano_eruption",
+      "name": "Volcano Eruption",
+      "description": "Explosive volcanic blast",
+      "category": "nature",
+      "path": "audio/volcano_eruption.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "explosive",
+        "blast",
+        "power",
+        "destruction"
+      ]
+    },
+    "choir_aah": {
+      "id": "choir_aah",
+      "name": "Choir Aah",
+      "description": "Choir singing sustained ah vowel",
+      "category": "vocal",
+      "path": "audio/choir_aah.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "choir",
+        "sustained",
+        "heavenly",
+        "chord"
+      ]
+    },
+    "whispering": {
+      "id": "whispering",
+      "name": "Whispering",
+      "description": "Soft breathy whisper",
+      "category": "vocal",
+      "path": "audio/whispering.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "soft",
+        "breathy",
+        "intimate",
+        "quiet"
+      ]
+    },
+    "beatbox": {
+      "id": "beatbox",
+      "name": "Beatbox",
+      "description": "Vocal percussion rhythms",
+      "category": "vocal",
+      "path": "audio/beatbox.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "percussion",
+        "vocal",
+        "rhythmic",
+        "hip-hop"
+      ]
+    },
+    "opera_singer": {
+      "id": "opera_singer",
+      "name": "Opera Singer",
+      "description": "Trained operatic voice with vibrato",
+      "category": "vocal",
+      "path": "audio/opera_singer.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "operatic",
+        "vibrato",
+        "classical",
+        "powerful"
+      ]
+    },
+    "tuvan_throat": {
+      "id": "tuvan_throat",
+      "name": "Tuvan Throat Singing",
+      "description": "Overtone singing with drone",
+      "category": "vocal",
+      "path": "audio/tuvan_throat.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "overtone",
+        "drone",
+        "mongolian",
+        "unique"
+      ]
+    },
+    "children_laughing": {
+      "id": "children_laughing",
+      "name": "Children Laughing",
+      "description": "Playful child giggles",
+      "category": "vocal",
+      "path": "audio/children_laughing.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "playful",
+        "giggles",
+        "happy",
+        "light"
+      ]
+    },
+    "crowd_cheering": {
+      "id": "crowd_cheering",
+      "name": "Crowd Cheering",
+      "description": "Stadium crowd applause",
+      "category": "vocal",
+      "path": "audio/crowd_cheering.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "stadium",
+        "applause",
+        "energy",
+        "celebration"
+      ]
+    },
+    "baby_crying": {
+      "id": "baby_crying",
+      "name": "Baby Crying",
+      "description": "Infant vocal distress",
+      "category": "vocal",
+      "path": "audio/baby_crying.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "infant",
+        "distress",
+        "high",
+        "emotional"
+      ]
+    },
+    "scream": {
+      "id": "scream",
+      "name": "Scream",
+      "description": "Human scream of terror",
+      "category": "vocal",
+      "path": "audio/scream.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "terror",
+        "high",
+        "intense",
+        "horror"
+      ]
+    },
+    "traffic": {
+      "id": "traffic",
+      "name": "City Traffic",
+      "description": "Cars passing with Doppler effect",
+      "category": "urban",
+      "path": "audio/traffic.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "cars",
+        "doppler",
+        "city",
+        "busy"
+      ]
+    },
+    "subway_train": {
+      "id": "subway_train",
+      "name": "Subway Train",
+      "description": "Underground train with screech",
+      "category": "urban",
+      "path": "audio/subway_train.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "underground",
+        "screech",
+        "metal",
+        "transit"
+      ]
+    },
+    "construction": {
+      "id": "construction",
+      "name": "Construction Site",
+      "description": "Building with machinery noise",
+      "category": "urban",
+      "path": "audio/construction.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "building",
+        "machinery",
+        "noise",
+        "industrial"
+      ]
+    },
+    "police_siren": {
+      "id": "police_siren",
+      "name": "Police Siren",
+      "description": "Emergency vehicle wailing",
+      "category": "urban",
+      "path": "audio/police_siren.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "emergency",
+        "wailing",
+        "urgent",
+        "alarm"
+      ]
+    },
+    "street_footsteps": {
+      "id": "street_footsteps",
+      "name": "Street Footsteps",
+      "description": "People walking on pavement",
+      "category": "urban",
+      "path": "audio/street_footsteps.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "walking",
+        "pavement",
+        "crowd",
+        "urban"
+      ]
+    },
+    "coffee_shop": {
+      "id": "coffee_shop",
+      "name": "Coffee Shop",
+      "description": "Muffled conversation and cups",
+      "category": "urban",
+      "path": "audio/coffee_shop.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "muffled",
+        "conversation",
+        "cafe",
+        "ambient"
+      ]
+    },
+    "skateboard": {
+      "id": "skateboard",
+      "name": "Skateboard",
+      "description": "Wheels and board tricks",
+      "category": "urban",
+      "path": "audio/skateboard.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "wheels",
+        "tricks",
+        "youth",
+        "street"
+      ]
+    },
+    "basketball_dribble": {
+      "id": "basketball_dribble",
+      "name": "Basketball Dribble",
+      "description": "Ball bouncing on court",
+      "category": "urban",
+      "path": "audio/basketball_dribble.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "bouncing",
+        "court",
+        "rhythmic",
+        "sports"
+      ]
+    },
+    "vinyl_scratch": {
+      "id": "vinyl_scratch",
+      "name": "Vinyl Scratch",
+      "description": "Record scratching effect",
+      "category": "fx",
+      "path": "audio/vinyl_scratch.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "scratch",
+        "dj",
+        "hip-hop",
+        "rhythmic"
+      ]
+    },
+    "tape_rewind": {
+      "id": "tape_rewind",
+      "name": "Tape Rewind",
+      "description": "Cassette fast rewind",
+      "category": "fx",
+      "path": "audio/tape_rewind.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rewind",
+        "cassette",
+        "vintage",
+        "fast"
+      ]
+    },
+    "radio_static": {
+      "id": "radio_static",
+      "name": "Radio Static",
+      "description": "Tuning between stations",
+      "category": "fx",
+      "path": "audio/radio_static.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "static",
+        "tuning",
+        "noise",
+        "vintage"
+      ]
+    },
+    "glass_breaking": {
+      "id": "glass_breaking",
+      "name": "Glass Breaking",
+      "description": "Shattering glass shards",
+      "category": "fx",
+      "path": "audio/glass_breaking.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "shattering",
+        "sharp",
+        "impact",
+        "fragile"
+      ]
+    },
+    "sword_clash": {
+      "id": "sword_clash",
+      "name": "Sword Clash",
+      "description": "Metal swords striking",
+      "category": "fx",
+      "path": "audio/sword_clash.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "metal",
+        "strike",
+        "medieval",
+        "sharp"
+      ]
+    },
+    "gunshot": {
+      "id": "gunshot",
+      "name": "Gunshot",
+      "description": "Sharp explosive firearm",
+      "category": "fx",
+      "path": "audio/gunshot.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "explosive",
+        "sharp",
+        "impact",
+        "violent"
+      ]
+    },
+    "explosion": {
+      "id": "explosion",
+      "name": "Explosion",
+      "description": "Large blast with debris",
+      "category": "fx",
+      "path": "audio/explosion.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "blast",
+        "debris",
+        "massive",
+        "impact"
+      ]
+    },
+    "heart_beat": {
+      "id": "heart_beat",
+      "name": "Heart Beat",
+      "description": "Rhythmic pulse thump",
+      "category": "fx",
+      "path": "audio/heart_beat.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "pulse",
+        "rhythmic",
+        "thump",
+        "body"
+      ]
+    },
+    "breathing": {
+      "id": "breathing",
+      "name": "Breathing",
+      "description": "Human breath in and out",
+      "category": "fx",
+      "path": "audio/breathing.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "breath",
+        "rhythmic",
+        "quiet",
+        "life"
+      ]
+    },
+    "phone_vibrate": {
+      "id": "phone_vibrate",
+      "name": "Phone Vibrate",
+      "description": "Mobile phone buzzing",
+      "category": "fx",
+      "path": "audio/phone_vibrate.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "buzzing",
+        "mobile",
+        "modern",
+        "quiet"
+      ]
+    },
+    "door_creak": {
+      "id": "door_creak",
+      "name": "Door Creak",
+      "description": "Hinge squeak open",
+      "category": "fx",
+      "path": "audio/door_creak.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "squeak",
+        "hinge",
+        "horror",
+        "wood"
+      ]
+    },
+    "bubble_pop": {
+      "id": "bubble_pop",
+      "name": "Bubble Pop",
+      "description": "Underwater bubble bursting",
+      "category": "fx",
+      "path": "audio/bubble_pop.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "burst",
+        "water",
+        "cartoon",
+        "light"
+      ]
+    },
+    "whoosh": {
+      "id": "whoosh",
+      "name": "Whoosh",
+      "description": "Fast air movement",
+      "category": "fx",
+      "path": "audio/whoosh.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "fast",
+        "air",
+        "transition",
+        "swish"
+      ]
+    },
+    "bell_ring": {
+      "id": "bell_ring",
+      "name": "Bell Ring",
+      "description": "Church or school bell",
+      "category": "fx",
+      "path": "audio/bell_ring.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "ring",
+        "metal",
+        "decay",
+        "alert"
+      ]
+    },
+    "clock_chime": {
+      "id": "clock_chime",
+      "name": "Clock Chime",
+      "description": "Grandfather clock bell",
+      "category": "fx",
+      "path": "audio/clock_chime.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "chime",
+        "bell",
+        "time",
+        "classic"
+      ]
+    },
+    "squeaky_toy": {
+      "id": "squeaky_toy",
+      "name": "Squeaky Toy",
+      "description": "Rubber toy squeeze",
+      "category": "fx",
+      "path": "audio/squeaky_toy.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "squeak",
+        "rubber",
+        "cartoon",
+        "funny"
+      ]
+    },
+    "paper_tear": {
+      "id": "paper_tear",
+      "name": "Paper Tear",
+      "description": "Ripping paper sheet",
+      "category": "fx",
+      "path": "audio/paper_tear.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "rip",
+        "paper",
+        "sharp",
+        "quick"
+      ]
+    },
+    "camera_shutter": {
+      "id": "camera_shutter",
+      "name": "Camera Shutter",
+      "description": "Mechanical camera click",
+      "category": "fx",
+      "path": "audio/camera_shutter.wav",
+      "duration": 0.0,
+      "sample_rate": 22050,
+      "tags": [
+        "click",
+        "mechanical",
+        "photo",
+        "precise"
+      ]
+    }
+  },
+  "categories": [
+    "fx",
+    "instruments",
+    "mechanical",
+    "nature",
+    "percussion",
+    "synthetic",
+    "urban",
+    "vocal"
+  ]
+}

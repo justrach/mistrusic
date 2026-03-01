@@ -1129,8 +1129,11 @@ def init_default_library(library_dir: Path | str | None = None) -> SoundLibrary:
             )
             lib._index[sound_id] = meta
     
-    # Try to load instrument dataset
-    lib = load_instrument_dataset("data/good_sounds_pairs")
+    # Try to load instrument dataset (adds to existing library)
+    try:
+        load_instrument_dataset("data/good_sounds_pairs")
+    except Exception:
+        pass  # Dataset is optional
     
     lib._save_index()
     return lib

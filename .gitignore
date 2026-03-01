@@ -1,27 +1,35 @@
-# Model checkpoints (too large for git)
-checkpoints/
+# Dependencies
+node_modules/
+frontend/node_modules/
 
-# Rendered audio (binary, large)
-audio/
-
-# Raw instrument samples
-raw_instruments/
-
-# Python
-__pycache__/
+# Build outputs
+dist/
+frontend/dist/
 *.pyc
-*.pyo
-.venv/
-*.egg-info/
+__pycache__/
 
-# macOS
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
 .DS_Store
+Thumbs.db
 
-# Demo script — keep local
-SCRIPT.md
+# Audio cache
+audio/trance_raw/*.wav
+audio/haunted_raw/*.wav
+audio/hiphop_raw/*.wav
 
-# Data cache
-data/cache/
+# Model files
+*.npz
+*.ckpt
 
-# Data cache
-data/cache/
+# Logs
+*.log

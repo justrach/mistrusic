@@ -1,18 +1,9 @@
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useCallback } from 'react';
 import { audioUrl } from '../api/upload';
 
-interface AudioPlayer {
-  play: (id: string) => void;
-  stop: () => void;
-  toggle: (id: string) => void;
-  isPlaying: boolean;
-  currentId: string | null;
-}
-
-export function useAudioPlayer(): AudioPlayer {
+export function useAudioPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [currentId, setCurrentId] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const currentIdRef = useRef<string | null>(null);
 
   const stop = useCallback(() => {
     if (audioRef.current) {
@@ -20,30 +11,30 @@ export function useAudioPlayer(): AudioPlayer {
       audioRef.current.src = '';
       audioRef.current = null;
     }
-    setIsPlaying(false);
-    setCurrentId(null);
+    currentIdRef.current = null;
   }, []);
 
   const play = useCallback((id: string) => {
     stop();
     const audio = new Audio(audioUrl(id));
     audio.onended = () => {
-      setIsPlaying(false);
-      setCurrentId(null);
+      currentIdRef.current = null;
+      audioRef.current = null;
     };
     audioRef.current = audio;
-    setCurrentId(id);
-    setIsPlaying(true);
-    audio.play();
+    currentIdRef.current = id;
+    audio.play().catch((err) => {
+      console.warn('Audio play failed:', err);
+    });
   }, [stop]);
 
   const toggle = useCallback((id: string) => {
-    if (currentId === id && isPlaying) {
+    if (currentIdRef.current === id && audioRef.current && !audioRef.current.paused) {
       stop();
     } else {
       play(id);
     }
-  }, [currentId, isPlaying, play, stop]);
+  }, [play, stop]);
 
-  return { play, stop, toggle, isPlaying, currentId };
+  return { play, stop, toggle };
 }

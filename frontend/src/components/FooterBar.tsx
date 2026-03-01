@@ -38,6 +38,7 @@ export function FooterBar({
         gap: 12,
         alignItems: 'center',
         zIndex: 10,
+        pointerEvents: 'auto',
       }}
     >
       <UploadZone label="Sound A" fileName={soundAName} onFile={onUploadA} disabled={isBusy} />

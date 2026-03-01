@@ -7,7 +7,7 @@ interface Props {
 
 export function Layout({ children, footer }: Props) {
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%', zIndex: 2 }}>
+    <div style={{ position: 'relative', width: '100%', height: '100%', zIndex: 2, pointerEvents: 'none' }}>
       <header
         style={{
           position: 'fixed',

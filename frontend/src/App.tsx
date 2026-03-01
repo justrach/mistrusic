@@ -62,7 +62,7 @@ export default function App() {
     (id: string) => {
       player.toggle(id);
     },
-    [player],
+    [player.toggle],
   );
 
   const isBusy = state.phase === 'uploading' || state.phase === 'analyzing' || state.phase === 'morphing';

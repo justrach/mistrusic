@@ -33,8 +33,9 @@ function EqBars({ color = "bg-violet-400" }: { color?: string }) {
   );
 }
 
-// ── Vibes ───────────────────────────────────────────────────────────────────
+// ── Expanded Vibes with all categories ───────────────────────────────────────
 const VIBES = [
+  // Original vibes
   { label: "👻 Haunted House",   prompt: "creepy haunted mansion, dark minor chords, eerie atmosphere building to terrifying climax",    lib: "haunted" },
   { label: "🌿 Dark Forest",      prompt: "lost deep in an ancient forest at night, mysterious organic textures, building dread then wonder", lib: "haunted" },
   { label: "🎹 Hip Hop",          prompt: "smooth late-night hip hop, soulful Rhodes chords, laid-back groove building to a head-nodding peak", lib: "hiphop"  },
@@ -43,12 +44,28 @@ const VIBES = [
   { label: "🚀 Space Station",    prompt: "floating weightless in deep space, cosmic and cinematic, slow build to interstellar euphoria",   lib: "trance"  },
   { label: "🔥 Festival Peak",    prompt: "massive festival main stage, crowd going insane, huge drop, pure euphoric energy",              lib: "trance"  },
   { label: "❄️ Arctic Drift",     prompt: "vast frozen tundra, sparse and isolating, cold pads, slowly warming into something beautiful",  lib: "trance"  },
+  // NEW: Mechanical vibes
+  { label: "⚙️ Industrial",       prompt: "heavy machinery and grinding gears, mechanical rhythms, industrial noise becoming musical",       lib: "haunted" },
+  { label: "🚂 Train Journey",    prompt: "rhythmic train wheels on tracks, steady motion, building steam and momentum",                  lib: "hiphop"  },
+  // NEW: Nature vibes
+  { label: "🌊 Ocean Waves",      prompt: "gentle ocean waves building to powerful surf, water rhythms, deep blue calm to storm",         lib: "trance"  },
+  { label: "⛈️ Thunder Storm",    prompt: "distant thunder rumbling, rain building, electric energy in the air, powerful release",         lib: "haunted" },
+  { label: "🐋 Whale Song",       prompt: "deep underwater whale calls, vast ocean depths, mysterious and ancient marine sounds",          lib: "trance"  },
+  // NEW: Percussion vibes
+  { label: "🥁 Tribal Drums",     prompt: "primitive tribal drums, rhythmic pulse, ceremonial energy building to ecstatic dance",          lib: "hiphop"  },
+  { label: "🔔 Gong Meditation",  prompt: "large metal gong resonance, overtones building, meditative drone to cosmic expansion",          lib: "trance"  },
+  // NEW: Vocal vibes
+  { label: "🎤 Choir Voices",     prompt: "ethereal choir voices, heavenly harmonies, angelic build to celestial power",                   lib: "trance"  },
+  { label: "🗣️ Tuvan Throat",     prompt: "deep throat singing drones, harmonic overtones, ancient Mongolian steppes",                     lib: "haunted" },
+  // NEW: Urban vibes
+  { label: "🏙️ City Traffic",     prompt: "urban city sounds, traffic rhythms, subway rumbles, concrete jungle symphony",                  lib: "hiphop"  },
+  { label: "☕ Coffee Shop",      prompt: "muffled cafe ambience, quiet conversation, intimate acoustic warmth",                          lib: "hiphop"  },
 ];
 
 const KEYWORDS: { words: string[]; lib: string }[] = [
-  { words: ["haunt","ghost","spook","horror","eerie","creep","scary","mansion","zombie","gothic","sinister","dark forest","shadow","macabre","witch","cursed"], lib: "haunted" },
-  { words: ["hip hop","hiphop","rap","groove","beat","rhodes","soul","bounce","lofi","lo-fi","chill","r&b","boom bap","trap","sample"], lib: "hiphop"  },
-  { words: ["trance","rave","festival","euphoric","epic","space","cosmic","float","anthem","sunrise","edm","plur","uplift","drop"],       lib: "trance"  },
+  { words: ["haunt","ghost","spook","horror","eerie","creep","scary","mansion","zombie","gothic","sinister","dark forest","shadow","macabre","witch","cursed","industrial","machine","gear","factory","thunder","storm","lightning","tuvan","throat"], lib: "haunted" },
+  { words: ["hip hop","hiphop","rap","groove","beat","rhodes","soul","bounce","lofi","lo-fi","chill","r&b","boom bap","trap","sample","train","tribal","drums","percussion","city","urban","traffic","subway","coffee","cafe"], lib: "hiphop"  },
+  { words: ["trance","rave","festival","euphoric","epic","space","cosmic","float","anthem","sunrise","edm","plur","uplift","drop","ocean","waves","whale","underwater","choir","voices","angelic","gong","meditation"],       lib: "trance"  },
 ];
 
 function detectLib(text: string) {

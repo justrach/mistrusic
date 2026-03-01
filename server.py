@@ -306,6 +306,60 @@ async def splice(body: dict):
                              headers={"Content-Disposition": "inline; filename=splice.wav"})
 @app.get("/health")
 @app.get("/health")
+@app.post("/mix")
+async def mix_tracks(body: dict):
+    """
+    Layer multiple tracks together into one WAV.
+
+    Body: {
+      "tracks": [
+        { "id": 1, "vibe": "trance", "volume": 0.8, "offset_s": 0.0 },
+        { "id": 5, "vibe": "haunted", "volume": 0.6, "offset_s": 4.0 },
+        ...
+      ],
+      "clip_s": 30   // optional: trim output to N seconds
+    }
+    """
+    items  = body.get("tracks", [])
+    clip_s = float(body.get("clip_s", 0))
+
+    if not items:
+        return JSONResponse({"error": "No tracks provided"}, status_code=400)
+
+    layers = []
+    for item in items:
+        audio = render_midi_to_audio(int(item["id"]), vibe=item.get("vibe", "trance"))
+        if audio is None:
+            continue
+        vol    = float(item.get("volume", 1.0))
+        offset = int(float(item.get("offset_s", 0)) * SR)
+        if offset > 0:
+            audio = np.concatenate([np.zeros(offset, dtype=np.float32), audio])
+        layers.append(audio * vol)
+
+    if not layers:
+        return JSONResponse({"error": "No audio loaded"}, status_code=500)
+
+    # Pad all layers to the same length then sum
+    max_len = max(len(l) for l in layers)
+    if clip_s > 0:
+        max_len = min(max_len, int(clip_s * SR))
+    mixed = np.zeros(max_len, dtype=np.float64)
+    for l in layers:
+        n = min(len(l), max_len)
+        mixed[:n] += l[:n]
+
+    # Normalize
+    pk = np.abs(mixed).max()
+    if pk > 1e-8:
+        mixed = (mixed / pk * 0.88).astype(np.float32)
+
+    return StreamingResponse(io.BytesIO(to_wav_bytes(mixed.astype(np.float32))),
+                             media_type="audio/wav",
+                             headers={"Content-Disposition": "inline; filename=mix.wav"})
+
+
+@app.get("/health")
 def health():
     return {
         "status": "ok",

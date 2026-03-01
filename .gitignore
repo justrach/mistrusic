@@ -1,0 +1,21 @@
+# Model checkpoints (too large for git)
+checkpoints/
+
+# Rendered audio (binary, large)
+audio/
+
+# Raw instrument samples
+raw_instruments/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+
+# macOS
+.DS_Store
+
+# Data cache
+data/cache/

@@ -1,42 +1,28 @@
-export interface AudioFeatures {
-  duration: number;
-  rms: number;
-  centroid: number;
-  tempo: number;
-  zcr: number;
+export type Phase = 'idle' | 'loading' | 'playing' | 'error';
+export type Mode = 'generate' | 'splice';
+
+export interface PlanSegment {
+  id: number;
+  reason: string;
 }
 
-export interface Classification {
-  label: string;
-  confidence: number;
+export interface TrackFeatures {
+  energy: number;
+  brightness: number;
+  darkness: number;
+  spread: number;
 }
-
-export interface SoundEntry {
-  id: string;
-  name: string;
-  features: AudioFeatures | null;
-  classification: Classification[] | null;
-  colorIndex: number;
-}
-
-export interface MorphStep {
-  step_number: number;
-  model_output: string;
-  observations: string;
-}
-
-export type Phase = 'idle' | 'uploading' | 'analyzing' | 'ready' | 'morphing' | 'complete' | 'error';
 
 export interface AppState {
   phase: Phase;
-  soundA: SoundEntry | null;
-  soundB: SoundEntry | null;
-  intent: string;
-  outputId: string | null;
-  outputFeatures: AudioFeatures | null;
-  outputClassification: Classification[] | null;
-  morphSteps: MorphStep[];
-  currentStep: number;
+  mode: Mode;
+  selectedVibe: number;
+  journey: string;
+  spliceCount: number;
+  spliceClipS: number;
+  audioUrl: string | null;
+  plan: PlanSegment[];
+  outputFeatures: TrackFeatures | null;
+  vibeLib: string | null;
   error: string | null;
-  nextColorIndex: number;
 }

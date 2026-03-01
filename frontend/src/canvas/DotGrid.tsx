@@ -42,7 +42,6 @@ export function DotGrid({ isMorphing }: Props) {
       const mx = mouseRef.current.x;
       const my = mouseRef.current.y;
 
-      // Smooth pulse opacity transition
       const targetPulse = morphingRef.current ? 1 : 0;
       pulseOpacityRef.current += (targetPulse - pulseOpacityRef.current) * 0.03;
 
@@ -55,21 +54,17 @@ export function DotGrid({ isMorphing }: Props) {
           const x = c * spacing;
           const y = r * spacing;
 
-          // Hover proximity
           const dx = x - mx;
           const dy = y - my;
           const dist = Math.sqrt(dx * dx + dy * dy);
           const hoverFactor = Math.max(0, 1 - dist / DOT_HOVER_RADIUS);
 
-          // Pulsation during morphing
           const pulse = Math.sin(t * 3 + (x + y) * 0.02) * 0.5 + 0.5;
           const pulseContrib = pulse * pulseOpacityRef.current * 0.3;
 
-          // Base opacity
           const baseAlpha = 0.35;
           const alpha = Math.min(1, baseAlpha + hoverFactor * 0.5 + pulseContrib);
 
-          // Color: blend from base (#D1CFC9) toward hover (#999)
           const baseR = 209, baseG = 207, baseB = 201;
           const hoverR = 153, hoverG = 153, hoverB = 153;
           const f = hoverFactor;

@@ -1,40 +1,70 @@
-import { useRef, useCallback } from 'react';
-import { audioUrl } from '../api/upload';
+import { useRef, useCallback, useState } from 'react';
 
 export function useAudioPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const currentIdRef = useRef<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const rafRef = useRef<number>(0);
+
+  const stopTracking = useCallback(() => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  const startTracking = useCallback(() => {
+    const tick = () => {
+      if (audioRef.current) {
+        setCurrentTime(audioRef.current.currentTime);
+        setDuration(audioRef.current.duration || 0);
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    tick();
+  }, []);
 
   const stop = useCallback(() => {
+    stopTracking();
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.src = '';
       audioRef.current = null;
     }
-    currentIdRef.current = null;
-  }, []);
+    setIsPlaying(false);
+    setCurrentTime(0);
+  }, [stopTracking]);
 
-  const play = useCallback((id: string) => {
+  const play = useCallback((url: string) => {
     stop();
-    const audio = new Audio(audioUrl(id));
+    const audio = new Audio(url);
     audio.onended = () => {
-      currentIdRef.current = null;
-      audioRef.current = null;
+      setIsPlaying(false);
+      stopTracking();
+    };
+    audio.onloadedmetadata = () => {
+      setDuration(audio.duration);
     };
     audioRef.current = audio;
-    currentIdRef.current = id;
+    setIsPlaying(true);
+    startTracking();
     audio.play().catch((err) => {
       console.warn('Audio play failed:', err);
+      setIsPlaying(false);
     });
-  }, [stop]);
+  }, [stop, startTracking, stopTracking]);
 
-  const toggle = useCallback((id: string) => {
-    if (currentIdRef.current === id && audioRef.current && !audioRef.current.paused) {
-      stop();
+  const togglePause = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.paused) {
+      audio.play();
+      setIsPlaying(true);
+      startTracking();
     } else {
-      play(id);
+      audio.pause();
+      setIsPlaying(false);
+      stopTracking();
     }
-  }, [play, stop]);
+  }, [startTracking, stopTracking]);
 
-  return { play, stop, toggle };
+  return { play, stop, togglePause, isPlaying, currentTime, duration, audioRef };
 }

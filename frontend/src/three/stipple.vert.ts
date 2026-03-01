@@ -49,25 +49,19 @@ void main() {
   float distFromCenter = length(pos);
   vec3 dir = distFromCenter > 0.001 ? normalize(pos) : vec3(0.0, 1.0, 0.0);
 
-  // Breathing
   float breath = sin(uTime * uBreathRate * 0.5 + aRandomSeed * 6.28318) * 0.03;
   pos += dir * breath;
 
-  // Spikiness (noise displacement)
   float noise = simplex3d(pos * 2.0 + uTime * 0.3);
   pos += dir * noise * uSpikiness * 0.5;
 
-  // Scatter
   pos += dir * uScatter * distFromCenter * 0.3;
 
-  // Scale
   pos *= uScale;
 
-  // Entrance animation: scatter -> converge
   vec3 scatteredPos = pos * 5.0 + dir * aRandomSeed * 8.0;
   pos = mix(scatteredPos, pos, uEntranceProgress);
 
-  // Slow Y-axis rotation
   float angle = uTime * 0.15;
   float c = cos(angle);
   float s = sin(angle);
@@ -76,13 +70,11 @@ void main() {
   vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
   gl_Position = projectionMatrix * mvPosition;
 
-  // Tiny crisp dots matching background grid dot size (~1.5px on screen)
   float size = mix(0.8, 1.5, aRandomSeed) * (30.0 / -mvPosition.z);
   gl_PointSize = max(size, 0.5);
 
-  // Alpha: core particles more opaque, edges more transparent, random variation
   float baseAlpha = smoothstep(0.0, 0.15, aDensity);
-  float randomDim = 0.4 + aRandomSeed * 0.6; // some dots dimmer than others
+  float randomDim = 0.4 + aRandomSeed * 0.6;
   vAlpha = baseAlpha * randomDim * uGhostOpacity;
 
   vColorVariant = aColorVariant;

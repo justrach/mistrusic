@@ -11,7 +11,7 @@ export interface ParticleData {
   positions: Float32Array;
   seeds: Float32Array;
   densities: Float32Array;
-  colorVariants: Float32Array; // per-particle color variation index (0-1)
+  colorVariants: Float32Array;
 }
 
 export function generateParticles(): ParticleData {
@@ -22,7 +22,6 @@ export function generateParticles(): ParticleData {
 
   let idx = 0;
 
-  // Core particles: asymmetric Gaussian
   for (let i = 0; i < CORE_COUNT; i++) {
     const x = gaussianRandom() * 0.6;
     const y = gaussianRandom() * 0.8;
@@ -37,7 +36,6 @@ export function generateParticles(): ParticleData {
     idx++;
   }
 
-  // Edge particles: wider Gaussian
   for (let i = 0; i < EDGE_COUNT; i++) {
     const x = gaussianRandom() * 1.5;
     const y = gaussianRandom() * 1.5;
@@ -52,7 +50,6 @@ export function generateParticles(): ParticleData {
     idx++;
   }
 
-  // Tendril particles: exponential along random rays
   for (let i = 0; i < TENDRIL_COUNT; i++) {
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.acos(2 * Math.random() - 1);

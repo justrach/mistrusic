@@ -1,108 +1,100 @@
 import { useReducer, useCallback } from 'react';
 import { reducer, initialState } from './state/reducer';
-import { uploadFile, analyzeAudio } from './api/upload';
-import { useMorph } from './hooks/useMorph';
+import { generate, splice } from './api/generate';
 import { useAudioPlayer } from './hooks/useAudioPlayer';
 import { DotGrid } from './canvas/DotGrid';
 import { SceneRoot } from './three/SceneRoot';
-import { CloudLayout } from './three/CloudLayout';
+import { SingleCloudLayout } from './three/SingleCloudLayout';
 import { Layout } from './components/Layout';
 import { FooterBar } from './components/FooterBar';
 import { ThoughtOverlay } from './components/ThoughtOverlay';
+import { PlaybackBar } from './components/PlaybackBar';
+import { VIBES } from './constants';
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { startMorph } = useMorph(dispatch);
   const player = useAudioPlayer();
 
-  const handleUpload = useCallback(
-    async (slot: 'A' | 'B', file: File) => {
-      try {
-        dispatch({ type: 'SET_PHASE', phase: 'uploading' });
-        const { id } = await uploadFile(file);
+  const handleVibeSelect = useCallback((index: number) => {
+    dispatch({ type: 'SET_VIBE', index });
+    dispatch({ type: 'SET_JOURNEY', journey: VIBES[index].prompt });
+  }, []);
 
-        const colorIndex = state.nextColorIndex;
-        if (slot === 'A') {
-          dispatch({ type: 'SET_SOUND_A', id, name: file.name, colorIndex });
-        } else {
-          dispatch({ type: 'SET_SOUND_B', id, name: file.name, colorIndex });
-        }
+  const handleGo = useCallback(async () => {
+    const vibe = state.selectedVibe >= 0 ? VIBES[state.selectedVibe] : null;
+    if (!vibe) return;
 
-        dispatch({ type: 'SET_PHASE', phase: 'analyzing' });
-        const analysis = await analyzeAudio(id);
+    dispatch({ type: 'SET_PHASE', phase: 'loading' });
 
-        if (slot === 'A') {
-          dispatch({
-            type: 'SET_FEATURES_A',
-            features: analysis.features,
-            classification: analysis.classification,
-          });
-        } else {
-          dispatch({
-            type: 'SET_FEATURES_B',
-            features: analysis.features,
-            classification: analysis.classification,
-          });
-        }
-
-        dispatch({ type: 'SET_PHASE', phase: 'ready' });
-      } catch (err) {
-        dispatch({ type: 'SET_ERROR', error: String(err) });
+    try {
+      if (state.mode === 'generate') {
+        const result = await generate(state.journey, vibe.lib);
+        dispatch({
+          type: 'GENERATION_COMPLETE',
+          audioUrl: result.audioUrl,
+          plan: result.plan,
+          vibeLib: vibe.lib,
+        });
+        player.play(result.audioUrl);
+      } else {
+        const result = await splice(state.spliceCount, state.spliceClipS, vibe.lib);
+        dispatch({ type: 'SPLICE_COMPLETE', audioUrl: result.audioUrl });
+        player.play(result.audioUrl);
       }
-    },
-    [state.nextColorIndex],
-  );
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      dispatch({ type: 'SET_ERROR', error: msg });
+    }
+  }, [state.selectedVibe, state.mode, state.journey, state.spliceCount, state.spliceClipS, player]);
 
-  const handleGo = useCallback(() => {
-    if (!state.soundA) return;
-    startMorph(state.soundA.id, state.soundB?.id, state.intent);
-  }, [state.soundA, state.soundB, state.intent, startMorph]);
+  const handleClickCloud = useCallback(() => {
+    player.togglePause();
+  }, [player]);
 
-  const handleClickCloud = useCallback(
-    (id: string) => {
-      player.toggle(id);
-    },
-    [player.toggle],
-  );
-
-  const isBusy = state.phase === 'uploading' || state.phase === 'analyzing' || state.phase === 'morphing';
-  const canGo = !!state.soundA && state.intent.trim().length > 0 && !isBusy;
+  const isBusy = state.phase === 'loading';
+  const canGo = state.mode === 'generate'
+    ? state.selectedVibe >= 0 && state.journey.trim().length > 0 && !isBusy
+    : state.selectedVibe >= 0 && !isBusy;
 
   return (
     <>
-      <DotGrid isMorphing={state.phase === 'morphing'} />
+      <DotGrid isMorphing={state.phase === 'loading'} />
       <SceneRoot>
-        <CloudLayout
-          soundA={state.soundA}
-          soundB={state.soundB}
+        <SingleCloudLayout
           phase={state.phase}
-          currentStep={state.currentStep}
-          morphSteps={state.morphSteps}
           outputFeatures={state.outputFeatures}
-          outputId={state.outputId}
+          vibeLib={state.vibeLib}
           onClickCloud={handleClickCloud}
         />
       </SceneRoot>
       <Layout
         footer={
           <FooterBar
-            soundAName={state.soundA?.name}
-            soundBName={state.soundB?.name}
-            intent={state.intent}
-            onUploadA={(f) => handleUpload('A', f)}
-            onUploadB={(f) => handleUpload('B', f)}
-            onIntentChange={(v) => dispatch({ type: 'SET_INTENT', intent: v })}
-            onGo={handleGo}
+            mode={state.mode}
+            selectedVibe={state.selectedVibe}
+            journey={state.journey}
+            spliceCount={state.spliceCount}
+            spliceClipS={state.spliceClipS}
             canGo={canGo}
             isBusy={isBusy}
+            onModeChange={(m) => dispatch({ type: 'SET_MODE', mode: m })}
+            onVibeSelect={handleVibeSelect}
+            onJourneyChange={(t) => dispatch({ type: 'SET_JOURNEY', journey: t })}
+            onSpliceCountChange={(c) => dispatch({ type: 'SET_SPLICE_COUNT', count: c })}
+            onSpliceClipSChange={(s) => dispatch({ type: 'SET_SPLICE_CLIP_S', clipS: s })}
+            onGo={handleGo}
           />
         }
       >
-        <ThoughtOverlay
-          steps={state.morphSteps}
-          currentStep={state.currentStep}
-          phase={state.phase}
-        />
+        <ThoughtOverlay plan={state.plan} phase={state.phase} />
+        {state.phase === 'playing' && (
+          <PlaybackBar
+            isPlaying={player.isPlaying}
+            currentTime={player.currentTime}
+            duration={player.duration}
+            onToggle={player.togglePause}
+          />
+        )}
         {state.error && (
           <div
             style={{

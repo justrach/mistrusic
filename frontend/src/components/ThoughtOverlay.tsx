@@ -1,38 +1,13 @@
-import { useRef, useEffect } from 'react';
-import { MorphStep } from '../types';
+import { PlanSegment } from '../types';
 
 interface Props {
-  steps: MorphStep[];
-  currentStep: number;
+  plan: PlanSegment[];
   phase: string;
 }
 
-function cleanText(text: string): string {
-  return text
-    .replace(/```[\s\S]*?```/g, '')
-    .replace(/`[^`]+`/g, '')
-    .trim()
-    .split('\n')
-    .filter((l) => l.trim())
-    .slice(0, 3)
-    .join(' ')
-    .slice(0, 300);
-}
-
-export function ThoughtOverlay({ steps, currentStep, phase }: Props) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [steps.length]);
-
-  if (phase !== 'morphing' && phase !== 'complete') return null;
-
-  const stepLabel = phase === 'complete'
-    ? 'Complete'
-    : `Step ${currentStep + 1}`;
+export function ThoughtOverlay({ plan, phase }: Props) {
+  if (phase !== 'loading' && phase !== 'playing') return null;
+  if (phase === 'playing' && plan.length === 0) return null;
 
   return (
     <div
@@ -47,62 +22,67 @@ export function ThoughtOverlay({ steps, currentStep, phase }: Props) {
         pointerEvents: 'none',
       }}
     >
-      <div
-        style={{
-          fontFamily: 'monospace',
-          fontSize: 11,
-          color: 'var(--muted)',
-          lineHeight: 1.6,
-          marginBottom: 8,
-          fontWeight: 600,
-          letterSpacing: '0.04em',
-        }}
-      >
-        {stepLabel}
-      </div>
-      <div
-        ref={scrollRef}
-        style={{
-          maxHeight: 'calc(40vh - 24px)',
-          overflow: 'hidden',
-        }}
-      >
-        {steps.map((step, i) => {
-          const text = cleanText(step.model_output || '');
-          if (!text) return null;
-          return (
-            <div
-              key={i}
-              style={{
-                fontFamily: 'monospace',
-                fontSize: 10,
-                color: 'var(--muted)',
-                lineHeight: 1.5,
-                marginBottom: 6,
-                opacity: i === steps.length - 1 ? 1 : 0.5,
-                transition: 'opacity 0.3s',
-              }}
-            >
-              <span style={{ color: 'var(--text)', opacity: 0.3, marginRight: 4 }}>
-                {step.step_number + 1}.
-              </span>
-              {text}
-            </div>
-          );
-        })}
-        {phase === 'morphing' && (
+      {phase === 'loading' && (
+        <div
+          style={{
+            fontFamily: 'monospace',
+            fontSize: 11,
+            color: 'var(--muted)',
+            lineHeight: 1.6,
+            fontWeight: 600,
+            letterSpacing: '0.04em',
+            animation: 'pulse 1.5s ease-in-out infinite',
+          }}
+        >
+          Planning journey...
+        </div>
+      )}
+
+      {phase === 'playing' && plan.length > 0 && (
+        <>
           <div
             style={{
               fontFamily: 'monospace',
-              fontSize: 10,
+              fontSize: 11,
               color: 'var(--muted)',
-              animation: 'pulse 1.5s ease-in-out infinite',
+              lineHeight: 1.6,
+              marginBottom: 8,
+              fontWeight: 600,
+              letterSpacing: '0.04em',
             }}
           >
-            ...
+            Journey Plan
           </div>
-        )}
-      </div>
+          <div style={{ maxHeight: 'calc(40vh - 24px)', overflow: 'hidden' }}>
+            {plan.map((segment, i) => (
+              <div
+                key={segment.id}
+                style={{
+                  fontFamily: 'monospace',
+                  fontSize: 10,
+                  color: 'var(--muted)',
+                  lineHeight: 1.5,
+                  marginBottom: 6,
+                  opacity: 0,
+                  animation: `fadeIn 0.3s ease forwards ${i * 0.1}s`,
+                }}
+              >
+                <span style={{ color: 'var(--text)', opacity: 0.3, marginRight: 4 }}>
+                  #{String(segment.id).padStart(3, '0')}
+                </span>
+                {segment.reason}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }

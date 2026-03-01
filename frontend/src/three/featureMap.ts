@@ -1,4 +1,5 @@
-import { AudioFeatures } from '../types';
+import { TrackFeatures } from '../types';
+import { BREATH_RATES } from '../constants';
 
 export interface ShaderUniforms {
   uScale: number;
@@ -14,13 +15,13 @@ export const DEFAULT_UNIFORMS: ShaderUniforms = {
   uScatter: 0.2,
 };
 
-export function featuresToUniforms(features: AudioFeatures | null): ShaderUniforms {
+export function featuresToUniforms(features: TrackFeatures | null, vibeLib?: string | null): ShaderUniforms {
   if (!features) return DEFAULT_UNIFORMS;
 
   return {
-    uScale: Math.min(2.1, 0.6 + features.rms * 3.0),
-    uSpikiness: Math.max(0, Math.min(1, (features.centroid - 500) / 7500)),
-    uBreathRate: features.tempo / 120,
-    uScatter: Math.max(0, Math.min(1, features.zcr * 5.0)),
+    uScale: 0.6 + features.energy * 2.0,
+    uSpikiness: features.brightness,
+    uBreathRate: vibeLib ? (BREATH_RATES[vibeLib] ?? 1.0) : 1.0,
+    uScatter: Math.min(1, features.spread * 3.0),
   };
 }

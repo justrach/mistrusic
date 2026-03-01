@@ -62,7 +62,6 @@ export function ParticleCloud({
     mat.uniforms.uEntranceProgress.value += (entranceProgress - mat.uniforms.uEntranceProgress.value) * LERP_FACTOR;
     mat.uniforms.uGhostOpacity.value += (ghostOpacity - mat.uniforms.uGhostOpacity.value) * LERP_FACTOR;
 
-    // Lerp all 4 stipple colors toward targets
     const palette = stipplePalette(color);
     const colorUniforms = [mat.uniforms.uColor, mat.uniforms.uColorAlt1, mat.uniforms.uColorAlt2, mat.uniforms.uColorAlt3];
     for (let i = 0; i < 4; i++) {
@@ -72,7 +71,6 @@ export function ParticleCloud({
 
   return (
     <group position={position}>
-      {/* Invisible sphere for click detection — R3F can't raycast <points> */}
       {onClick && (
         <mesh onClick={(e) => { e.stopPropagation(); onClick(); }}>
           <sphereGeometry args={[1.8, 16, 12]} />

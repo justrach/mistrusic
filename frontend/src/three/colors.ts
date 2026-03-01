@@ -4,14 +4,12 @@ export function getColor(index: number): string {
   return PALETTE[index % PALETTE.length];
 }
 
-/** Generate 4 stipple color variants from a base hex color:
- *  [base, lighter tint, darker shade, hue-shifted accent] */
 export function stipplePalette(hex: string): [string, string, string, string] {
   const { h, s, l } = hexToHsl(hex);
   const base = hex;
-  const tint = hslToHex(h, Math.max(0, s - 15), Math.min(100, l + 20));       // lighter, desaturated
-  const shade = hslToHex(h, Math.min(100, s + 10), Math.max(0, l - 25));      // darker, richer
-  const accent = hslToHex((h + 30) % 360, Math.min(100, s), Math.min(90, l)); // hue-shifted neighbor
+  const tint = hslToHex(h, Math.max(0, s - 15), Math.min(100, l + 20));
+  const shade = hslToHex(h, Math.min(100, s + 10), Math.max(0, l - 25));
+  const accent = hslToHex((h + 30) % 360, Math.min(100, s), Math.min(90, l));
   return [base, tint, shade, accent];
 }
 

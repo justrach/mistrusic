@@ -30,6 +30,25 @@ function fmt(s: number) {
 
 const TRACK_IDS = Array.from({ length: 100 }, (_, i) => i + 1);
 
+// Sound library categories
+const SOUND_CATEGORIES: Record<string, { label: string; icon: string; color: string }> = {
+  mechanical: { label: "Mechanical", icon: "⚙️", color: "text-orange-400" },
+  instruments: { label: "Instruments", icon: "🎸", color: "text-blue-400" },
+  synthetic: { label: "Synthetic", icon: "🔮", color: "text-purple-400" },
+  percussion: { label: "Percussion", icon: "🥁", color: "text-yellow-400" },
+  nature: { label: "Nature", icon: "🌿", color: "text-green-400" },
+  vocal: { label: "Vocal", icon: "🎤", color: "text-pink-400" },
+  urban: { label: "Urban", icon: "🏙️", color: "text-gray-400" },
+  fx: { label: "FX", icon: "✨", color: "text-red-400" },
+};
+
+interface Sound {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+}
+
 export default function StudioPage() {
   const [deck, setDeck]         = useState<DeckTrack[]>([]);
   const [mixing, setMixing]     = useState(false);
@@ -39,10 +58,26 @@ export default function StudioPage() {
   const [clipS, setClipS]       = useState(30);
   const [preview, setPreview]   = useState<number | null>(null);
   const [hasMix, setHasMix]     = useState(false);
+  
+  // Sound library state
+  const [sounds, setSounds]     = useState<Sound[]>([]);
+  const [soundCats, setSoundCats] = useState<string[]>([]);
+  const [selectedSoundCat, setSelectedSoundCat] = useState<string | null>(null);
 
   const audioRef   = useRef<HTMLAudioElement | null>(null);
   const rafRef     = useRef<number>(0);
   const prevAudRef = useRef<HTMLAudioElement | null>(null);
+
+  // Fetch sound library
+  useEffect(() => {
+    fetch(`${API}/api/sounds`)
+      .then(r => r.json())
+      .then(data => {
+        setSounds(data.sounds || []);
+        setSoundCats(data.categories || []);
+      })
+      .catch(() => {});
+  }, []);
 
   const addTrack = useCallback((id: number, vibe: Vibe) => {
     setDeck(d => [...d, { uid: makeUid(), id, vibe, volume: 0.8, offset_s: 0 }]);
@@ -170,6 +205,72 @@ export default function StudioPage() {
               </div>
             );
           })}
+          
+          {/* ── Sound Library Browser ── */}
+          {sounds.length > 0 && (
+            <div className="rounded-2xl border border-violet-500/20 bg-violet-500/5 p-4 mt-6">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <span className="text-xs font-semibold text-violet-300 uppercase tracking-widest">Sound Library</span>
+                  <span className="ml-2 text-[10px] text-zinc-600">{sounds.length} sounds</span>
+                </div>
+                <a href="/morph" className="text-[10px] text-violet-400 hover:text-violet-300 flex items-center gap-1">
+                  Open Morph Studio →
+                </a>
+              </div>
+              
+              {/* Category filter */}
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                <button
+                  onClick={() => setSelectedSoundCat(null)}
+                  className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all ${
+                    selectedSoundCat === null
+                      ? "bg-violet-500/30 text-white"
+                      : "bg-white/5 text-zinc-500 hover:bg-white/10"
+                  }`}
+                >
+                  All
+                </button>
+                {soundCats.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedSoundCat(cat === selectedSoundCat ? null : cat)}
+                    className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all ${
+                      selectedSoundCat === cat
+                        ? "bg-violet-500/30 text-white"
+                        : "bg-white/5 text-zinc-500 hover:bg-white/10"
+                    }`}
+                  >
+                    {SOUND_CATEGORIES[cat]?.icon} {SOUND_CATEGORIES[cat]?.label || cat}
+                  </button>
+                ))}
+              </div>
+              
+              {/* Sounds grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[200px] overflow-y-auto pr-1">
+                {(selectedSoundCat ? sounds.filter(s => s.category === selectedSoundCat) : sounds).map(sound => {
+                  const cat = SOUND_CATEGORIES[sound.category];
+                  return (
+                    <a
+                      key={sound.id}
+                      href="/morph"
+                      className="p-2 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 hover:border-violet-500/30 transition-all text-left"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm">{cat?.icon}</span>
+                        <span className={`text-[9px] uppercase ${cat?.color || "text-zinc-500"}`}>
+                          {cat?.label || sound.category}
+                        </span>
+                      </div>
+                      <div className="font-medium text-xs text-zinc-300 truncate mt-0.5">
+                        {sound.name}
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ── right: mix deck ── */}

@@ -131,8 +131,15 @@ Higher combined_score = better match + more distinct transformation + better aud
         dist_norm = normalize(distances)
         quality_norm = normalize(quality_scores)
 
-        # Weighted combination: intent match (50%) + transformation distance (25%) + quality (25%)
-        combined = 0.50 * clap_norm + 0.25 * dist_norm + 0.25 * quality_norm
+        # Penalize candidates with very low absolute transformation distance
+        # If a candidate is barely different from the original, it's a failed transformation
+        MIN_TRANSFORM = 0.05  # minimum cosine distance to be considered "transformed"
+        transform_penalty = np.array([
+            0.3 if d < MIN_TRANSFORM else 1.0 for d in distances
+        ])
+
+        # Weighted combination: intent match (35%) + transformation distance (40%) + quality (25%)
+        combined = (0.35 * clap_norm + 0.40 * dist_norm + 0.25 * quality_norm) * transform_penalty
 
         results = {}
         for i, path in enumerate(paths):

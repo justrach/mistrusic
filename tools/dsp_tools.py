@@ -90,8 +90,8 @@ class SpectralImprintTool(Tool):
             kernel_size += 1
         spectral_profile = uniform_filter1d(spectral_profile, size=kernel_size, axis=0)
 
-        # Blend B's profile with flat (1.0) — reduced from 0.6 to 0.4
-        blend_strength = 0.4
+        # Blend B's profile with flat (1.0) — use smoothing param to control strength
+        blend_strength = 0.3 + smoothing * 0.5  # range 0.3-0.8 based on smoothing
         blended_profile = (1.0 - blend_strength) + blend_strength * spectral_profile
         S_out = S_a * blended_profile
         y_out = librosa.istft(S_out, hop_length=hop)
@@ -195,9 +195,9 @@ class CrossSynthesisTool(Tool):
         S_env = S_env[:, :min_frames]
         S_exc = S_exc[:, :min_frames]
 
-        # Compute smoothed spectral envelope (reduced from 40 to 20 for more detail)
+        # Compute smoothed spectral envelope (size=10 for more detail/character transfer)
         mag_env = np.abs(S_env)
-        envelope = uniform_filter1d(mag_env, size=20, axis=0)
+        envelope = uniform_filter1d(mag_env, size=10, axis=0)
 
         # Normalize excitation magnitude per-frame
         mag_exc = np.abs(S_exc)
@@ -205,8 +205,15 @@ class CrossSynthesisTool(Tool):
         exc_max[exc_max == 0] = 1.0
         norm_exc = mag_exc / exc_max
 
-        # Blend cross-synthesis with original excitation using configurable strength
-        out_mag = strength * (envelope * norm_exc) + (1.0 - strength) * mag_exc
+        # Cross-synthesis: envelope source's spectral shape × excitation's fine structure
+        cross_mag = envelope * norm_exc
+
+        # At high strength, also blend in raw envelope magnitude for stronger character transfer
+        if strength > 0.7:
+            env_blend = (strength - 0.7) / 0.3  # 0-1 ramp above 0.7
+            cross_mag = (1.0 - env_blend * 0.4) * cross_mag + (env_blend * 0.4) * mag_env
+
+        out_mag = strength * cross_mag + (1.0 - strength) * mag_exc
         phase_exc = np.angle(S_exc)
         S_out = out_mag * np.exp(1j * phase_exc)
 

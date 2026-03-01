@@ -27,14 +27,14 @@ function fmt(s: number) {
 }
 
 const VIBES = [
-  { label: "👻 Haunted House",   prompt: "creepy haunted mansion, dark minor chords, eerie atmosphere building to terrifying climax" },
-  { label: "🌅 Euphoric Sunrise", prompt: "start cold and misty at dawn, slowly build to a euphoric trance sunrise anthem" },
-  { label: "🌊 Deep Ocean",       prompt: "deep underwater journey, mysterious and vast, pressure building, dark and blue" },
-  { label: "🚀 Space Station",    prompt: "floating weightless in deep space, cosmic and cinematic, slow build to interstellar euphoria" },
-  { label: "🌙 Late Night Drive", prompt: "dark city highway at 3am, melancholic and hypnotic, neon lights blurring past" },
-  { label: "🔥 Festival Peak",    prompt: "massive festival main stage, crowd going insane, huge drop, pure euphoric energy" },
-  { label: "🌿 Dark Forest",      prompt: "lost deep in an ancient forest at night, mysterious organic textures, building dread then wonder" },
-  { label: "❄️ Arctic Drift",     prompt: "vast frozen tundra, sparse and isolating, cold pads, slowly warming into something beautiful" },
+  { label: "👻 Haunted House",   prompt: "creepy haunted mansion, dark minor chords, eerie atmosphere building to terrifying climax",   lib: "haunted" },
+  { label: "🌿 Dark Forest",      prompt: "lost deep in an ancient forest at night, mysterious organic textures, building dread then wonder", lib: "haunted" },
+  { label: "🎹 Hip Hop",          prompt: "smooth late-night hip hop, soulful Rhodes chords, laid-back groove building to a head-nodding peak", lib: "hiphop"  },
+  { label: "🌙 Late Night Drive", prompt: "dark city highway at 3am, melancholic and hypnotic, neon lights blurring past",               lib: "hiphop"  },
+  { label: "🌅 Euphoric Sunrise", prompt: "start cold and misty at dawn, slowly build to a euphoric trance sunrise anthem",              lib: "trance"  },
+  { label: "🚀 Space Station",    prompt: "floating weightless in deep space, cosmic and cinematic, slow build to interstellar euphoria",  lib: "trance"  },
+  { label: "🔥 Festival Peak",    prompt: "massive festival main stage, crowd going insane, huge drop, pure euphoric energy",             lib: "trance"  },
+  { label: "❄️ Arctic Drift",     prompt: "vast frozen tundra, sparse and isolating, cold pads, slowly warming into something beautiful", lib: "trance"  },
 ];
 
 export default function Home() {
@@ -47,7 +47,7 @@ export default function Home() {
   const [duration, setDuration] = useState(0);
   const [error, setError] = useState("");
   const [label, setLabel] = useState<string | null>(null);
-  const [activeVibe, setActiveVibe] = useState<string | null>(null);
+  const [activeVibe, setActiveVibe] = useState<typeof VIBES[0] | null>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const rafRef = useRef<number>(0);
@@ -99,17 +99,18 @@ export default function Home() {
     setPlan([]);
     setLoadingMsg("Mistral is planning your journey…");
     try {
+      const lib = activeVibe?.lib ?? "trance";
       const res = await fetch(`${API}/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ journey: journeyText }),
+        body: JSON.stringify({ journey: journeyText, vibe: lib }),
       });
       if (!res.ok) throw new Error(await res.text());
       const planHeader = res.headers.get("X-Plan");
       if (planHeader) setPlan(JSON.parse(planHeader));
-      setLoadingMsg("Rendering trance pads…");
+      setLoadingMsg("Rendering pads…");
       const blob = await res.blob();
-      playUrl(URL.createObjectURL(blob), activeVibe ?? "Journey");
+      playUrl(URL.createObjectURL(blob), activeVibe?.label ?? "Journey");
     } catch (e: unknown) {
       setError(String(e));
     } finally {
@@ -124,15 +125,15 @@ export default function Home() {
     setError("");
     setPlan([]);
     setLoadingMsg("Building DJ splice…");
-    setActiveVibe(null);
     try {
-      const res  = await fetch(`${API}/splice`, {
+      const lib = activeVibe?.lib ?? "trance";
+      const res = await fetch(`${API}/splice`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ count: 8, clip_s: 12 }),
+        body: JSON.stringify({ count: 8, clip_s: 12, vibe: lib }),
       });
       const blob = await res.blob();
-      playUrl(URL.createObjectURL(blob), "DJ Splice");
+      playUrl(URL.createObjectURL(blob), `DJ Splice · ${lib}`);
     } catch (e: unknown) {
       setError(String(e));
     } finally {
@@ -143,8 +144,9 @@ export default function Home() {
 
   function pickVibe(vibe: typeof VIBES[0]) {
     setJourney(vibe.prompt);
-    setActiveVibe(vibe.label);
+    setActiveVibe(vibe);
   }
+
 
   const progress = duration > 0 ? currentTime / duration : 0;
 
@@ -202,22 +204,32 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Vibe chips */}
-        <div className="w-full flex flex-wrap gap-2">
-          {VIBES.map((v) => (
-            <button
-              key={v.label}
-              onClick={() => pickVibe(v)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border
-                ${activeVibe === v.label
-                  ? "bg-violet-600/30 border-violet-500/60 text-violet-300"
-                  : "bg-white/5 border-white/10 text-zinc-400 hover:border-violet-500/40 hover:text-zinc-200"
-                }`}
-            >
-              {v.label}
-            </button>
+        {/* Vibe chips — grouped by lib */}
+        <div className="w-full flex flex-col gap-2">
+          {(["haunted","hiphop","trance"] as const).map((lib) => (
+            <div key={lib} className="flex items-center gap-2 flex-wrap">
+              <span className="text-[10px] text-zinc-700 uppercase tracking-widest w-12 shrink-0">
+                {lib === "haunted" ? "horror" : lib === "hiphop" ? "hip hop" : "trance"}
+              </span>
+              {VIBES.filter(v => v.lib === lib).map((v) => (
+                <button
+                  key={v.label}
+                  onClick={() => pickVibe(v)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border
+                    ${activeVibe?.label === v.label
+                      ? lib === "haunted" ? "bg-green-900/30 border-green-500/50 text-green-300"
+                        : lib === "hiphop"  ? "bg-amber-900/30 border-amber-500/50 text-amber-300"
+                        : "bg-violet-600/30 border-violet-500/60 text-violet-300"
+                      : "bg-white/5 border-white/10 text-zinc-400 hover:border-white/30 hover:text-zinc-200"
+                    }`}
+                >
+                  {v.label}
+                </button>
+              ))}
+            </div>
           ))}
         </div>
+
 
         {/* Input */}
         <div className="w-full flex flex-col gap-3">

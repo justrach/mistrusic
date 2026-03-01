@@ -282,6 +282,13 @@ export default function Home() {
             Describe a vibe.
           </h1>
           <p className="text-sm text-zinc-500">Music starts as you type — powered by Mistral AI</p>
+          
+          {/* Link to Morph Studio */}
+          <a href="/morph" className="inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/30 text-violet-300 text-xs hover:bg-violet-500/20 transition-all">
+            <span>🎛️</span>
+            <span>Try Sound Morphing Studio — 80+ sounds to blend!</span>
+            <span>→</span>
+          </a>
         </div>
 
         {/* Orb */}

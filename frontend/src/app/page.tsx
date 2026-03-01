@@ -19,6 +19,7 @@ function EqBars() {
 }
 
 function fmt(s: number) {
+  if (!isFinite(s) || isNaN(s)) return "–:––";
   const m = Math.floor(s / 60);
   return `${m}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 }
@@ -95,6 +96,9 @@ export default function Home() {
     stopCurrent();
     const audio = new Audio(url);
     audioRef.current = audio;
+    audio.onloadedmetadata = () => {
+      if (isFinite(audio.duration)) setDuration(audio.duration);
+    };
     audio.onplay  = () => { setPlaying(true);  rafRef.current = requestAnimationFrame(tick); };
     audio.onended = () => { setPlaying(false); cancelAnimationFrame(rafRef.current); };
     audio.onpause = () => { setPlaying(false); cancelAnimationFrame(rafRef.current); };

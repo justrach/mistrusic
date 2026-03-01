@@ -186,23 +186,48 @@ Valid JSON only. IDs must exist in the library.
 """
 
 def plan_journey(journey: str, index: list[dict]) -> list[dict]:
+    """Plan a musical journey using Mistral API.
+    
+    Falls back to random selection if API is unavailable or key is missing.
+    """
+    # Fallback: return random selection from index
+    if not MISTRAL_KEY or not index:
+        import random
+        count = min(5, len(index))
+        selected = random.sample(index, count) if len(index) >= count else index
+        return [{"id": e["id"], "reason": "Random selection (Mistral unavailable)"} for e in selected]
+    
     lines = [
         f"#{e['id']:03d}: energy={e['energy']:.3f} brightness={e['brightness']:.3f} dur={e['duration']}s"
         for e in index
     ]
-    resp = get_client().chat.completions.create(
-        model="mistral-small-latest",
-        messages=[
-            {"role": "system", "content": _PLAN_SYS},
-            {"role": "user",   "content": f"Journey: \"{journey}\"\n\nLibrary:\n" + "\n".join(lines)},
-        ],
-        temperature=0.5,
-        max_tokens=512,
-        response_format={"type": "json_object"},
-    )
-    parsed = json.loads(resp.choices[0].message.content)
-    segs   = parsed.get("segments") or list(parsed.values())[0]
-    return segs
+    
+    try:
+        resp = get_client().chat.completions.create(
+            model="mistral-small-latest",
+            messages=[
+                {"role": "system", "content": _PLAN_SYS},
+                {"role": "user",   "content": f"Journey: \"{journey}\"\n\nLibrary:\n" + "\n".join(lines)},
+            ],
+            temperature=0.5,
+            max_tokens=512,
+            response_format={"type": "json_object"},
+        )
+        parsed = json.loads(resp.choices[0].message.content)
+        segs = parsed.get("segments") or list(parsed.values())[0]
+        
+        # Validate segments have required fields
+        valid_segs = [s for s in segs if isinstance(s, dict) and "id" in s]
+        if not valid_segs:
+            raise ValueError("No valid segments returned")
+        return valid_segs
+        
+    except Exception as e:
+        print(f"[plan_journey] Error: {e}, falling back to random selection")
+        import random
+        count = min(5, len(index))
+        selected = random.sample(index, count) if len(index) >= count else index
+        return [{"id": e["id"], "reason": "Random selection (API error)"} for e in selected]
 
 # ── Routes ────────────────────────────────────────────────────────────────────
 
@@ -225,7 +250,6 @@ def list_tracks():
 
 
 @app.get("/track/{track_id}/audio")
-@app.get("/track/{track_id}/audio")
 def get_track_audio(track_id: int, clip_s: float = Query(default=0, ge=0), vibe: str = Query(default="trance")):
     """Stream audio for a specific track."""
     audio = render_midi_to_audio(track_id, vibe=vibe)
@@ -237,53 +261,70 @@ def get_track_audio(track_id: int, clip_s: float = Query(default=0, ge=0), vibe:
     return StreamingResponse(io.BytesIO(wav), media_type="audio/wav",
                              headers={"Content-Disposition": f"inline; filename={vibe}_{track_id:03d}.wav"})
 @app.post("/generate")
-@app.post("/generate")
 async def generate(body: dict):
     """
     Plan + render a musical journey via Mistral.
 
     Body: { "journey": "...", "vibe": "haunted" | "hiphop" | "trance" }
     """
-    journey  = body.get("journey", "euphoric melodic trance journey")
-    vibe_key = body.get("vibe", "trance")
-    # resolve chip label → library name
-    vibe = VIBE_MAP.get(vibe_key.lower().replace("👻","").replace("🌅","").replace("🌊","")
-                        .replace("🚀","").replace("🌙","").replace("🔥","")
-                        .replace("🌿","").replace("❄️","").strip(), vibe_key)
-    vibe = vibe if vibe in VIBE_LIBS else "trance"
+    try:
+        journey  = body.get("journey", "euphoric melodic trance journey")
+        vibe_key = body.get("vibe", "trance")
+        # resolve chip label → library name
+        vibe = VIBE_MAP.get(vibe_key.lower().replace("👻","").replace("🌅","").replace("🌊","")
+                            .replace("🚀","").replace("🌙","").replace("🔥","")
+                            .replace("🌿","").replace("❄️","").strip(), vibe_key)
+        vibe = vibe if vibe in VIBE_LIBS else "trance"
 
-    index   = json.loads(IDX_FILE.read_text()) if IDX_FILE.exists() else []
-    plan    = plan_journey(journey, index)
+        # Check if index file exists
+        if not IDX_FILE.exists():
+            return JSONResponse({"error": "Track index not found"}, status_code=500)
+        
+        index = json.loads(IDX_FILE.read_text())
+        if not index:
+            return JSONResponse({"error": "No tracks available"}, status_code=500)
+        
+        plan = plan_journey(journey, index)
+        if not plan:
+            return JSONResponse({"error": "Could not generate plan"}, status_code=500)
 
-    segments = []
-    for seg in plan:
-        audio = render_midi_to_audio(int(seg["id"]), vibe=vibe)
-        if audio is not None:
-            segments.append(audio)
+        segments = []
+        for seg in plan:
+            try:
+                audio = render_midi_to_audio(int(seg["id"]), vibe=vibe)
+                if audio is not None:
+                    segments.append(audio)
+            except Exception as e:
+                print(f"[generate] Error rendering segment {seg}: {e}")
+                continue
 
-    if not segments:
-        return JSONResponse({"error": "No segments rendered"}, status_code=500)
+        if not segments:
+            return JSONResponse({"error": "No segments could be rendered"}, status_code=500)
 
-    fade   = int(2.0 * SR)
-    result = segments[0]
-    for s in segments[1:]:
-        f       = min(fade, len(result), len(s))
-        overlap = result[-f:] * np.linspace(1,0,f) + s[:f] * np.linspace(0,1,f)
-        result  = np.concatenate([result[:-f], overlap, s[f:]])
+        fade   = int(2.0 * SR)
+        result = segments[0]
+        for s in segments[1:]:
+            f       = min(fade, len(result), len(s))
+            overlap = result[-f:] * np.linspace(1,0,f) + s[:f] * np.linspace(0,1,f)
+            result  = np.concatenate([result[:-f], overlap, s[f:]])
 
-    pk = np.abs(result).max()
-    if pk > 1e-8: result /= pk / 0.88
+        pk = np.abs(result).max()
+        if pk > 1e-8: result /= pk / 0.88
 
-    wav = to_wav_bytes(result)
-    return StreamingResponse(
-        io.BytesIO(wav), media_type="audio/wav",
-        headers={
-            "Content-Disposition": "inline; filename=journey.wav",
-            "X-Plan": json.dumps([{"id": s["id"], "reason": s.get("reason","")} for s in plan]),
-            "X-Vibe": vibe,
-        }
-    )
-@app.post("/splice")
+        wav = to_wav_bytes(result)
+        return StreamingResponse(
+            io.BytesIO(wav), media_type="audio/wav",
+            headers={
+                "Content-Disposition": "inline; filename=journey.wav",
+                "X-Plan": json.dumps([{"id": s["id"], "reason": s.get("reason","")} for s in plan]),
+                "X-Vibe": vibe,
+            }
+        )
+    except Exception as e:
+        print(f"[generate] Error: {e}")
+        import traceback
+        traceback.print_exc()
+        return JSONResponse({"error": f"Failed to generate: {str(e)}"}, status_code=500)
 @app.post("/splice")
 async def splice(body: dict):
     """Body: { "count": 8, "clip_s": 10, "vibe": "trance" }"""

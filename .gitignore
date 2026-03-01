@@ -17,5 +17,11 @@ __pycache__/
 # macOS
 .DS_Store
 
+# Demo script — keep local
+SCRIPT.md
+
+# Data cache
+data/cache/
+
 # Data cache
 data/cache/

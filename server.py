@@ -16,7 +16,30 @@ from functools import lru_cache
 import numpy as np
 import soundfile as sf
 import scipy.signal
-import mido
+
+SR        = 22050
+SF2       = "/tmp/FluidR3_GM.sf2"
+MIDI_DIR  = Path("/Users/rachpradhan/Downloads/Free-Chord-Progressions-main/EDM Progressions")
+IDX_FILE  = Path("audio/edm_index.json")
+MISTRAL_KEY = os.environ.get("MISTRAL_API_KEY", "")
+
+# vibe → (cache dir, GM program, fx name)
+VIBE_LIBS = {
+    "trance":  {"dir": Path("audio/trance_raw"),  "prefix": "trance",  "program": 90},
+    "haunted": {"dir": Path("audio/haunted_raw"), "prefix": "haunted", "program": 52},
+    "hiphop":  {"dir": Path("audio/hiphop_raw"),  "prefix": "hiphop",  "program": 4},
+}
+# which vibes each frontend chip maps to
+VIBE_MAP = {
+    "haunted house":   "haunted",
+    "dark forest":     "haunted",
+    "late night drive":"hiphop",
+    "festival peak":   "trance",
+    "euphoric sunrise":"trance",
+    "deep ocean":      "trance",
+    "space station":   "trance",
+    "arctic drift":    "trance",
+}
 from openai import OpenAI
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -111,10 +134,10 @@ def inject_program(mid_path: Path, program: int = 90) -> Path:
     new.save(str(tmp))
     return tmp
 
-def render_midi_to_audio(n: int, loops: int = 4, program: int = 90) -> np.ndarray | None:
-    """Render MIDI n as trance pad, looped, with FX applied."""
-    # use cached trance render if available
-    cached = TRANCE_DIR / f"trance_{n:03d}.wav"
+def render_midi_to_audio(n: int, loops: int = 4, vibe: str = "trance") -> np.ndarray | None:
+    """Return cached or freshly rendered audio for MIDI n under the given vibe."""
+    lib    = VIBE_LIBS.get(vibe, VIBE_LIBS["trance"])
+    cached = lib["dir"] / f"{lib['prefix']}_{n:03d}.wav"
     if cached.exists():
         audio, _ = sf.read(str(cached), dtype="float32", always_2d=False)
         if audio.ndim > 1: audio = audio.mean(axis=1)
@@ -123,7 +146,7 @@ def render_midi_to_audio(n: int, loops: int = 4, program: int = 90) -> np.ndarra
     mid_path = MIDI_DIR / f"generated_progression_{n:03d}.mid"
     if not mid_path.exists(): return None
 
-    tmp_mid = inject_program(mid_path, program)
+    tmp_mid = inject_program(mid_path, lib["program"])
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
         out_path = Path(f.name)
     subprocess.run(
@@ -133,21 +156,16 @@ def render_midi_to_audio(n: int, loops: int = 4, program: int = 90) -> np.ndarra
     )
     tmp_mid.unlink()
     if not out_path.exists(): return None
-
     audio, _ = sf.read(str(out_path), dtype="float32", always_2d=False)
     out_path.unlink()
     if audio.ndim > 1: audio = audio.mean(axis=1)
     if np.abs(audio).max() < 1e-8: return None
 
-    # loop
-    fade = int(0.1 * SR)
-    looped = audio.copy()
+    fade = int(0.1 * SR); looped = audio.copy()
     for _ in range(loops - 1):
         seam   = looped[-fade:] * np.linspace(1,0,fade) + audio[:fade] * np.linspace(0,1,fade)
         looped = np.concatenate([looped[:-fade], seam, audio[fade:]])
-
     return trance_fx(looped)
-
 # ── Mistral cascade planner ───────────────────────────────────────────────────
 
 _PLAN_SYS = """\
@@ -199,44 +217,49 @@ def list_tracks():
 
 
 @app.get("/track/{track_id}/audio")
-def get_track_audio(track_id: int, clip_s: float = Query(default=0, ge=0)):
-    """Stream audio for a specific track (trance-processed)."""
-    audio = render_midi_to_audio(track_id)
+@app.get("/track/{track_id}/audio")
+def get_track_audio(track_id: int, clip_s: float = Query(default=0, ge=0), vibe: str = Query(default="trance")):
+    """Stream audio for a specific track."""
+    audio = render_midi_to_audio(track_id, vibe=vibe)
     if audio is None:
         return JSONResponse({"error": f"Track {track_id} not found"}, status_code=404)
     if clip_s > 0:
         audio = audio[:int(clip_s * SR)]
     wav = to_wav_bytes(audio)
     return StreamingResponse(io.BytesIO(wav), media_type="audio/wav",
-                             headers={"Content-Disposition": f"inline; filename=trance_{track_id:03d}.wav"})
-
-
+                             headers={"Content-Disposition": f"inline; filename={vibe}_{track_id:03d}.wav"})
+@app.post("/generate")
 @app.post("/generate")
 async def generate(body: dict):
     """
     Plan + render a musical journey via Mistral.
 
-    Body: { "journey": "start dark and sparse, build to euphoric climax" }
-    Returns: streamed WAV of crossfaded segments
+    Body: { "journey": "...", "vibe": "haunted" | "hiphop" | "trance" }
     """
-    journey = body.get("journey", "euphoric melodic trance journey")
+    journey  = body.get("journey", "euphoric melodic trance journey")
+    vibe_key = body.get("vibe", "trance")
+    # resolve chip label → library name
+    vibe = VIBE_MAP.get(vibe_key.lower().replace("👻","").replace("🌅","").replace("🌊","")
+                        .replace("🚀","").replace("🌙","").replace("🔥","")
+                        .replace("🌿","").replace("❄️","").strip(), vibe_key)
+    vibe = vibe if vibe in VIBE_LIBS else "trance"
+
     index   = json.loads(IDX_FILE.read_text()) if IDX_FILE.exists() else []
     plan    = plan_journey(journey, index)
 
     segments = []
     for seg in plan:
-        audio = render_midi_to_audio(int(seg["id"]))
+        audio = render_midi_to_audio(int(seg["id"]), vibe=vibe)
         if audio is not None:
             segments.append(audio)
 
     if not segments:
         return JSONResponse({"error": "No segments rendered"}, status_code=500)
 
-    # crossfade
-    fade  = int(2.0 * SR)
+    fade   = int(2.0 * SR)
     result = segments[0]
     for s in segments[1:]:
-        f = min(fade, len(result), len(s))
+        f       = min(fade, len(result), len(s))
         overlap = result[-f:] * np.linspace(1,0,f) + s[:f] * np.linspace(0,1,f)
         result  = np.concatenate([result[:-f], overlap, s[f:]])
 
@@ -249,29 +272,26 @@ async def generate(body: dict):
         headers={
             "Content-Disposition": "inline; filename=journey.wav",
             "X-Plan": json.dumps([{"id": s["id"], "reason": s.get("reason","")} for s in plan]),
+            "X-Vibe": vibe,
         }
     )
-
-
+@app.post("/splice")
 @app.post("/splice")
 async def splice(body: dict):
-    """
-    Generate a DJ splice from N tracks.
-
-    Body: { "count": 8, "clip_s": 10 }
-    """
+    """Body: { "count": 8, "clip_s": 10, "vibe": "trance" }"""
     count  = int(body.get("count", 8))
     clip_s = float(body.get("clip_s", 10.0))
+    vibe   = body.get("vibe", "trance")
+    vibe   = vibe if vibe in VIBE_LIBS else "trance"
     index  = json.loads(IDX_FILE.read_text()) if IDX_FILE.exists() else []
 
-    # pick spread of tracks by energy
     picked = sorted(index, key=lambda x: x["energy"])
     step   = max(1, len(picked) // count)
     chosen = picked[::step][:count]
 
     clips = []
     for e in chosen:
-        audio = render_midi_to_audio(e["id"])
+        audio = render_midi_to_audio(e["id"], vibe=vibe)
         if audio is not None:
             n    = int(clip_s * SR)
             clip = audio[:n] if len(audio) >= n else np.pad(audio, (0, n-len(audio)))
@@ -284,8 +304,11 @@ async def splice(body: dict):
     wav = to_wav_bytes(result)
     return StreamingResponse(io.BytesIO(wav), media_type="audio/wav",
                              headers={"Content-Disposition": "inline; filename=splice.wav"})
-
-
+@app.get("/health")
 @app.get("/health")
 def health():
-    return {"status": "ok", "mistral": bool(MISTRAL_KEY), "tracks": len(list(TRANCE_DIR.glob("*.wav")))}
+    return {
+        "status": "ok",
+        "mistral": bool(MISTRAL_KEY),
+        "libraries": {name: len(list(cfg["dir"].glob("*.wav"))) for name, cfg in VIBE_LIBS.items()},
+    }

@@ -26,6 +26,17 @@ function fmt(s: number) {
   return `${m}:${String(sec).padStart(2, "0")}`;
 }
 
+const VIBES = [
+  { label: "👻 Haunted House",   prompt: "creepy haunted mansion, dark minor chords, eerie atmosphere building to terrifying climax" },
+  { label: "🌅 Euphoric Sunrise", prompt: "start cold and misty at dawn, slowly build to a euphoric trance sunrise anthem" },
+  { label: "🌊 Deep Ocean",       prompt: "deep underwater journey, mysterious and vast, pressure building, dark and blue" },
+  { label: "🚀 Space Station",    prompt: "floating weightless in deep space, cosmic and cinematic, slow build to interstellar euphoria" },
+  { label: "🌙 Late Night Drive", prompt: "dark city highway at 3am, melancholic and hypnotic, neon lights blurring past" },
+  { label: "🔥 Festival Peak",    prompt: "massive festival main stage, crowd going insane, huge drop, pure euphoric energy" },
+  { label: "🌿 Dark Forest",      prompt: "lost deep in an ancient forest at night, mysterious organic textures, building dread then wonder" },
+  { label: "❄️ Arctic Drift",     prompt: "vast frozen tundra, sparse and isolating, cold pads, slowly warming into something beautiful" },
+];
+
 export default function Home() {
   const [journey, setJourney] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,6 +47,7 @@ export default function Home() {
   const [duration, setDuration] = useState(0);
   const [error, setError] = useState("");
   const [label, setLabel] = useState<string | null>(null);
+  const [activeVibe, setActiveVibe] = useState<string | null>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const rafRef = useRef<number>(0);
@@ -64,9 +76,9 @@ export default function Home() {
     stopCurrent();
     const audio = new Audio(url);
     audioRef.current = audio;
-    audio.onplay    = () => { setPlaying(true); rafRef.current = requestAnimationFrame(tick); };
-    audio.onended   = () => { setPlaying(false); cancelAnimationFrame(rafRef.current); };
-    audio.onpause   = () => { setPlaying(false); cancelAnimationFrame(rafRef.current); };
+    audio.onplay  = () => { setPlaying(true); rafRef.current = requestAnimationFrame(tick); };
+    audio.onended = () => { setPlaying(false); cancelAnimationFrame(rafRef.current); };
+    audio.onpause = () => { setPlaying(false); cancelAnimationFrame(rafRef.current); };
     audio.play();
     setLabel(lbl);
   }
@@ -76,12 +88,11 @@ export default function Home() {
   function seek(e: React.MouseEvent<HTMLDivElement>) {
     if (!audioRef.current || !duration) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    const ratio = (e.clientX - rect.left) / rect.width;
-    audioRef.current.currentTime = ratio * duration;
+    audioRef.current.currentTime = ((e.clientX - rect.left) / rect.width) * duration;
   }
 
-  async function generate() {
-    if (!journey.trim()) return;
+  async function generate(journeyText = journey) {
+    if (!journeyText.trim()) return;
     stopCurrent();
     setLoading(true);
     setError("");
@@ -91,14 +102,14 @@ export default function Home() {
       const res = await fetch(`${API}/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ journey }),
+        body: JSON.stringify({ journey: journeyText }),
       });
       if (!res.ok) throw new Error(await res.text());
       const planHeader = res.headers.get("X-Plan");
       if (planHeader) setPlan(JSON.parse(planHeader));
       setLoadingMsg("Rendering trance pads…");
       const blob = await res.blob();
-      playUrl(URL.createObjectURL(blob), "Journey");
+      playUrl(URL.createObjectURL(blob), activeVibe ?? "Journey");
     } catch (e: unknown) {
       setError(String(e));
     } finally {
@@ -111,8 +122,9 @@ export default function Home() {
     stopCurrent();
     setLoading(true);
     setError("");
-    setLoadingMsg("Building DJ splice…");
     setPlan([]);
+    setLoadingMsg("Building DJ splice…");
+    setActiveVibe(null);
     try {
       const res  = await fetch(`${API}/splice`, {
         method: "POST",
@@ -129,10 +141,15 @@ export default function Home() {
     }
   }
 
+  function pickVibe(vibe: typeof VIBES[0]) {
+    setJourney(vibe.prompt);
+    setActiveVibe(vibe.label);
+  }
+
   const progress = duration > 0 ? currentTime / duration : 0;
 
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6 py-16">
       {/* Logo */}
       <div className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-2">
         <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center">
@@ -142,26 +159,20 @@ export default function Home() {
         <span className="text-zinc-600 text-sm">× Mistral AI</span>
       </div>
 
-      <div className="w-full max-w-lg flex flex-col items-center gap-10">
+      <div className="w-full max-w-lg flex flex-col items-center gap-8">
         {/* Orb */}
         <div className="relative flex items-center justify-center select-none">
-          {/* glow */}
           <div className={`absolute w-56 h-56 rounded-full bg-violet-600/20 blur-3xl transition-all duration-700
             ${playing ? "scale-125 opacity-100" : "scale-90 opacity-40"}`} />
-          {/* outer ring */}
           <div className={`absolute w-44 h-44 rounded-full border border-violet-500/20
             ${playing ? "animate-[spin-slow_10s_linear_infinite]" : ""}`} />
-          {/* main circle */}
           <div className={`relative w-36 h-36 rounded-full border-2 flex flex-col items-center justify-center gap-1
             transition-all duration-500
             ${playing ? "border-violet-500 animate-[pulse-ring_2s_ease-in-out_infinite]" : "border-white/10"}`}>
             {playing ? (
               <>
                 <EqBars />
-                <button
-                  onClick={stopCurrent}
-                  className="mt-1 text-violet-300 hover:text-white transition-colors"
-                >
+                <button onClick={stopCurrent} className="mt-1 text-violet-300 hover:text-white transition-colors">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                     <rect x="6" y="6" width="4" height="12" rx="1"/>
                     <rect x="14" y="6" width="4" height="12" rx="1"/>
@@ -176,12 +187,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Timer + progress bar */}
+        {/* Timer + progress */}
         <div className="w-full flex flex-col gap-2">
-          <div
-            className="w-full h-1 bg-white/10 rounded-full overflow-hidden cursor-pointer group"
-            onClick={seek}
-          >
+          <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden cursor-pointer" onClick={seek}>
             <div
               className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-100"
               style={{ width: `${progress * 100}%` }}
@@ -189,25 +197,42 @@ export default function Home() {
           </div>
           <div className="flex justify-between text-xs text-zinc-600 font-mono">
             <span>{fmt(currentTime)}</span>
-            {label && <span className="text-violet-500">{label}</span>}
+            {label && <span className="text-violet-400 text-xs">{label}</span>}
             <span>{duration > 0 ? fmt(duration) : "–:––"}</span>
           </div>
+        </div>
+
+        {/* Vibe chips */}
+        <div className="w-full flex flex-wrap gap-2">
+          {VIBES.map((v) => (
+            <button
+              key={v.label}
+              onClick={() => pickVibe(v)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border
+                ${activeVibe === v.label
+                  ? "bg-violet-600/30 border-violet-500/60 text-violet-300"
+                  : "bg-white/5 border-white/10 text-zinc-400 hover:border-violet-500/40 hover:text-zinc-200"
+                }`}
+            >
+              {v.label}
+            </button>
+          ))}
         </div>
 
         {/* Input */}
         <div className="w-full flex flex-col gap-3">
           <textarea
             value={journey}
-            onChange={(e) => setJourney(e.target.value)}
+            onChange={(e) => { setJourney(e.target.value); setActiveVibe(null); }}
             onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) generate(); }}
-            placeholder="Describe a journey… e.g. start dark and sparse, build to euphoric trance climax"
+            placeholder="Describe a journey… or pick a vibe above"
             rows={3}
             className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white
               placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50 resize-none"
           />
           <div className="flex gap-3">
             <button
-              onClick={generate}
+              onClick={() => generate()}
               disabled={loading || !journey.trim()}
               className="flex-1 h-12 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600
                 text-sm font-medium text-white transition-all hover:opacity-90

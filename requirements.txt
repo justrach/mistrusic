@@ -1,0 +1,7 @@
+numpy>=1.24
+scipy>=1.10
+soundfile>=0.12
+mlx>=0.22
+tqdm>=4.65
+librosa>=0.10
+openai>=1.30

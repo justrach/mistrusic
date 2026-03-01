@@ -880,6 +880,9 @@ class SoundLibrary:
     def load_audio(self, sound_id: str, target_sr: int | None = None) -> np.ndarray:
         """Load the audio data for a sound.
         
+        If the audio file doesn't exist, generates it dynamically using
+        the sound synthesis engine.
+        
         Args:
             sound_id: The sound identifier
             target_sr: Optional target sample rate (defaults to stored rate)
@@ -887,25 +890,37 @@ class SoundLibrary:
         Returns:
             Audio array as float32
         """
+        from .sound_synth import generate_sound_by_id
+        
         meta = self._index.get(sound_id)
         if meta is None:
             raise KeyError(f"Sound not found: {sound_id}")
         
-        # Try library directory first, then relative to repo root
+        target_sr = target_sr or 22050
+        
+        # Try to load from file first
         audio_path = self.library_dir / meta.path
         if not audio_path.exists():
-            # Try relative to repo root
             audio_path = Path(meta.path)
         
-        if not audio_path.exists():
-            raise FileNotFoundError(f"Audio file not found: {audio_path}")
+        if audio_path.exists():
+            # Load existing file
+            audio, sr = sf.read(audio_path, always_2d=False)
+            audio = to_mono(audio)
+            if target_sr != sr:
+                audio = resample_audio(audio, sr, target_sr)
+            return audio.astype(np.float32)
         
-        audio, sr = sf.read(audio_path, always_2d=False)
-        audio = to_mono(audio)
+        # Generate dynamically using synthesis
+        audio = generate_sound_by_id(sound_id, duration=3.0)
         
-        if target_sr is not None and target_sr != sr:
-            audio = resample_audio(audio, sr, target_sr)
-            sr = target_sr
+        # Save for future use
+        try:
+            audio_path.parent.mkdir(parents=True, exist_ok=True)
+            sf.write(audio_path, audio, target_sr)
+        except Exception:
+            # If we can't save, just return the generated audio
+            pass
         
         return audio.astype(np.float32)
     

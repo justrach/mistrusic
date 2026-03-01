@@ -346,6 +346,10 @@ def morph_audio(
     if params is None:
         params = MorphParams()
     
+    # Clean inputs - replace NaN/Inf with zeros
+    source = np.nan_to_num(source, nan=0.0, posinf=0.0, neginf=0.0)
+    modulator = np.nan_to_num(modulator, nan=0.0, posinf=0.0, neginf=0.0)
+    
     # Ensure same length (loop shorter one)
     max_len = max(len(source), len(modulator))
     if len(source) < max_len:

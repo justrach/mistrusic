@@ -264,41 +264,6 @@ async def generate(body: dict):
         journey  = body.get("journey", "euphoric melodic trance journey")
         vibe_key = body.get("vibe", "trance")
         # resolve chip label → library name
-<<<<<<< HEAD
-        vibe = VIBE_MAP.get(vibe_key.lower().replace("\U0001f47b","").replace("\U0001f305","").replace("\U0001f30a","")
-                            .replace("\U0001f680","").replace("\U0001f319","").replace("\U0001f525","")
-                            .replace("\U0001f33f","").replace("\u2744\ufe0f","").strip(), vibe_key)
-        vibe = vibe if vibe in VIBE_LIBS else "trance"
-
-        index   = json.loads(IDX_FILE.read_text()) if IDX_FILE.exists() else []
-        if not index:
-            return JSONResponse({"error": "No track library found. Run tag_tracks.py first to build audio/edm_index.json"}, status_code=503)
-
-        if not MISTRAL_KEY:
-            return JSONResponse({"error": "MISTRAL_API_KEY not set"}, status_code=503)
-
-        plan    = plan_journey(journey, index)
-
-        segments = []
-        for seg in plan:
-            audio = render_midi_to_audio(int(seg["id"]), vibe=vibe)
-            if audio is not None:
-                segments.append(audio)
-
-        if not segments:
-            return JSONResponse({"error": "No segments rendered"}, status_code=500)
-
-        fade   = int(2.0 * SR)
-        result = segments[0]
-        for s in segments[1:]:
-            f       = min(fade, len(result), len(s))
-            overlap = result[-f:] * np.linspace(1,0,f) + s[:f] * np.linspace(0,1,f)
-            result  = np.concatenate([result[:-f], overlap, s[f:]])
-
-        pk = np.abs(result).max()
-        if pk > 1e-8: result /= pk / 0.88
-
-=======
         vibe = VIBE_MAP.get(vibe_key.lower().replace("👻","").replace("🌅","").replace("🌊","")
                             .replace("🚀","").replace("🌙","").replace("🔥","")
                             .replace("🌿","").replace("❄️","").strip(), vibe_key)
@@ -353,6 +318,7 @@ async def generate(body: dict):
         import traceback
         traceback.print_exc()
         return JSONResponse({"error": f"Failed to generate: {str(e)}"}, status_code=500)
+
 @app.post("/splice")
 async def splice(body: dict):
     """Body: { "count": 8, "clip_s": 10, "vibe": "trance" }"""
@@ -446,4 +412,206 @@ def health():
         "status": "ok",
         "mistral": bool(MISTRAL_KEY),
         "libraries": {name: len(list(cfg["dir"].glob("*.wav"))) for name, cfg in VIBE_LIBS.items()},
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SOUND LIBRARY & MORPHING API
+# ═══════════════════════════════════════════════════════════════════════════════
+
+from src.sound_library import SoundLibrary, get_library, init_default_library
+from src.input_handler import InputHandler, AudioSource
+from src.morph_engine import MorphEngine, MorphParams, quick_morph
+from src.export import export_audio, ExportOptions, ExportFormat, get_export_options_for_format
+import uuid
+import time
+
+# Initialize components
+_morph_engine: MorphEngine | None = None
+_sound_library: SoundLibrary | None = None
+_morph_jobs: dict[str, dict] = {}
+
+def get_morph_engine() -> MorphEngine:
+    """Get or create the morph engine."""
+    global _morph_engine
+    if _morph_engine is None:
+        _morph_engine = MorphEngine(sample_rate=SR)
+    return _morph_engine
+
+def get_sound_library() -> SoundLibrary:
+    """Get or create the sound library."""
+    global _sound_library
+    if _sound_library is None:
+        _sound_library = get_library("data/sound_library")
+    return _sound_library
+
+
+@app.get("/api/sounds")
+def list_library_sounds(category: str | None = None, tag: str | None = None):
+    """List available sounds from the library."""
+    lib = get_sound_library()
+    sounds = lib.list_sounds(category=category, tag=tag)
+    
+    return {
+        "sounds": [
+            {
+                "id": s.id,
+                "name": s.name,
+                "description": s.description,
+                "category": s.category,
+                "duration": s.duration,
+                "sample_rate": s.sample_rate,
+                "tags": s.tags,
+            }
+            for s in sounds
+        ],
+        "count": len(sounds),
+        "categories": lib.get_categories(),
+        "tags": lib.get_tags(),
+    }
+
+
+@app.get("/api/sounds/categories")
+def list_categories():
+    """Get all available sound categories."""
+    lib = get_sound_library()
+    return {"categories": lib.get_categories()}
+
+
+@app.get("/api/sounds/{sound_id}")
+def get_sound_details(sound_id: str):
+    """Get details for a specific sound."""
+    lib = get_sound_library()
+    sound = lib.get_sound(sound_id)
+    
+    if sound is None:
+        return JSONResponse(
+            {"error": f"Sound not found: {sound_id}"},
+            status_code=404
+        )
+    
+    return {
+        "id": sound.id,
+        "name": sound.name,
+        "description": sound.description,
+        "category": sound.category,
+        "duration": sound.duration,
+        "sample_rate": sound.sample_rate,
+        "tags": sound.tags,
+    }
+
+
+@app.get("/api/sounds/{sound_id}/preview")
+def get_sound_preview(sound_id: str, clip_s: float = Query(default=0, ge=0, le=30)):
+    """Get preview audio for a library sound."""
+    lib = get_sound_library()
+    
+    if sound_id not in lib:
+        return JSONResponse(
+            {"error": f"Sound not found: {sound_id}"},
+            status_code=404
+        )
+    
+    try:
+        audio = lib.load_audio(sound_id, target_sr=SR)
+        
+        if clip_s > 0:
+            n_samples = int(clip_s * SR)
+            audio = audio[:n_samples]
+        
+        wav = to_wav_bytes(audio)
+        return StreamingResponse(
+            io.BytesIO(wav),
+            media_type="audio/wav",
+            headers={"Content-Disposition": f"inline; filename={sound_id}_preview.wav"}
+        )
+    except Exception as e:
+        return JSONResponse(
+            {"error": f"Failed to load sound: {str(e)}"},
+            status_code=500
+        )
+
+
+@app.post("/api/morph/quick")
+async def quick_morph_endpoint(
+    source_type: str = Form(...),
+    modulator_type: str = Form(...),
+    source_id: str | None = Form(None),
+    modulator_id: str | None = Form(None),
+    source_file: UploadFile | None = File(None),
+    modulator_file: UploadFile | None = File(None),
+    intensity: float = Form(default=0.5, ge=0, le=1),
+):
+    """Quick morph with simplified controls."""
+    try:
+        handler = InputHandler(get_sound_library())
+        
+        # Load source
+        if source_type == "library":
+            source = handler.from_library(source_id)
+        else:
+            content = await source_file.read()
+            source = handler.from_upload(content, source_file.filename)
+        
+        # Load modulator
+        if modulator_type == "library":
+            modulator = handler.from_library(modulator_id, max_duration=source.duration)
+        else:
+            content = await modulator_file.read()
+            modulator = handler.from_upload(content, modulator_file.filename)
+        
+        # Limit duration
+        max_samples = int(30 * SR)
+        source_audio = source.audio[:max_samples]
+        modulator_audio = modulator.audio[:max_samples]
+        
+        # Perform quick morph
+        result = quick_morph(source_audio, modulator_audio, intensity, SR)
+        
+        # Export
+        wav = to_wav_bytes(result)
+        
+        return StreamingResponse(
+            io.BytesIO(wav),
+            media_type="audio/wav",
+            headers={"Content-Disposition": "inline; filename=morph_quick.wav"}
+        )
+        
+    except Exception as e:
+        return JSONResponse(
+            {"error": f"Morphing failed: {str(e)}"},
+            status_code=500
+        )
+
+
+@app.get("/api/morph/presets")
+def list_morph_presets():
+    """Get available morphing presets."""
+    return {
+        "presets": [
+            {
+                "id": "subtle",
+                "name": "Subtle",
+                "description": "Light touch, mostly source with hint of modulator",
+                "params": {"blend_ratio": 0.25, "sharpness": 0.3, "smoothing": 0.5}
+            },
+            {
+                "id": "moderate",
+                "name": "Moderate",
+                "description": "Balanced blend between source and modulator",
+                "params": {"blend_ratio": 0.5, "sharpness": 0.5, "smoothing": 0.3}
+            },
+            {
+                "id": "intense",
+                "name": "Intense",
+                "description": "Strong modulator influence",
+                "params": {"blend_ratio": 0.75, "sharpness": 0.7, "smoothing": 0.2}
+            },
+            {
+                "id": "extreme",
+                "name": "Extreme",
+                "description": "Maximum effect, heavy transformation",
+                "params": {"blend_ratio": 0.9, "sharpness": 0.9, "smoothing": 0.1}
+            },
+        ]
     }

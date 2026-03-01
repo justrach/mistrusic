@@ -30,6 +30,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/studio" className="px-3 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-white hover:bg-white/5 transition-all">
               Studio
             </Link>
+            <Link href="/morph" className="px-3 py-1.5 rounded-lg text-xs text-violet-300 hover:text-white hover:bg-violet-500/20 transition-all font-medium">
+              Morph
+            </Link>
             <Link href="/arch" className="px-3 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-white hover:bg-white/5 transition-all">
               Architecture
             </Link>
